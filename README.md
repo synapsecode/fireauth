@@ -1,15 +1,19 @@
 # fireauth
 
-A new Flutter package project.
+A Flutter Package that aims to simplify Flutter Firebase Authentication and streamline development
+Works for both Flutter Native and Flutter Web! It aims to increase development speed rapidly
 
-## Getting Started
+# Requirements:
+- ### Complete Firebase Setup (Use My Firesetup python script to ensure correct setup)
+- ### Enable all the Required Authentication Methods in Firebase Auth Console
+- ### Add your SHA-1 & SHA-256 Keys to Firebase
+- ### Enable Android Device Verification from Google Cloud Console for the Firebase App (For phone Authentication only - to Avoid ReCaptcha)
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+ 
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
-"# fireauth" 
+# Currently Supports:
+- ### Email & Password Registration
+- ### Email & Password SignIn
+- ### GoogleOAuth PopUp & Redirect SignIn
+- ### Anonymous SignIn
+- ### Phone Authentication
