@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+/// Initializes Firebase for Mobile Devices
+///
+/// Ensure you call this in your main method, ensure to use await before it
+/// and convert your main method into an async main method.
 initializeFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
@@ -16,6 +20,7 @@ initializeFirebase() async {
   }
 }
 
+/// This ChangeNotifier exposes the entire Authentication System
 class FirebaseAuthenticationProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isWaitingForSignInCompletion = false;
@@ -279,12 +284,34 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
 
   logout() async {
     await FirebaseAuth.instance.signOut();
-    isWaitingForSignInCompletion = false;
+    isWaitingForSignInCompletion = false; //To Update ChangeNotifier
     print("Logged Out");
   }
 }
 
+///This class contains static methods that help you access the Authentication methods effectively
 class AuthController {
+  ///Initates a GoogleSignIn and the AuthManager changes the screen to the destinationFragment
+  ///
+  ///Shows a traditional OAuth Pop up window on the Web and a normal GoogleSignIn Modal on android
+  ///
+  ///Please ensure you have added your SHA-1 Key to Firebase to work on Mobile and ensure to have your
+  ///GoogleSignInClientID in a meta tag in /web/index.html.
+  ///
+  ///Enable Google Authentication in your Firebase Authentication Console for this to work
+  ///
+  ///[context] is neccessary
+  ///
+  ///[signInWithRedirect] (default false) is a boolean that is Flutter Web only and basically allows you to chose if you want your
+  ///OAuth Screen to be a popup or a redirect. Setting this to true, will use a redirect
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[onError] a Callback for any Error that may occur
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
   static signInWithGoogle(
     BuildContext context, {
     bool signInWithRedirect,
@@ -301,11 +328,33 @@ class AuthController {
     );
   }
 
+  ///Initiates and Anonymous SignIn and the AuthManager changes the screen to the destinationFragment
+  ///
+  ///Enable Anonymous Authentication in your Firebase Authentication Console for this to work
+  ///[context] is neccessary
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
   static signInAnonymously(BuildContext context, {bool enableWaitingScreen}) {
     Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
         .signInAnonymously(enableWaitingScreen: enableWaitingScreen ?? true);
   }
 
+  ///Registers the Email and Password Combination on Firebase
+  ///initiates a login and the AuthManager changes the screen to the destinationFragment
+  ///Call this to create a new User and instantly log them in
+  ///
+  ///Please enable Email and Password Authentication in your Firebase Authentication Console for this to work
+  ///
+  ///[context] is necessary
+  ///
+  ///[email] is required and is self-explanatory
+  ///
+  ///[password] is also required and is self-explanatory
+  ///
+  ///[onError] is a callback to handle any errors during the process
   static registerWithEmailAndPassword(
     BuildContext context, {
     @required String email,
@@ -320,6 +369,19 @@ class AuthController {
     );
   }
 
+  ///Initates a Mail & Password SignIn and the AuthManager changes the screen to the destinationFragment
+  ///
+  ///Please enable Email and Password Authentication in your Firebase Authentication Console for this to work
+  ///
+  ///[context] is necessary
+  ///
+  ///[email] is required and is self-explanatory
+  ///
+  ///[password] is also required and is self-explanatory
+  ///
+  ///[onError] is a callback to handle any errors during the process
+  ///
+  ///[onIncorrectCredentials] is a callback to handle incorrect credentials
   static signInWithEmailAndPassword(
     BuildContext context, {
     @required String email,
@@ -336,6 +398,24 @@ class AuthController {
     );
   }
 
+  ///Initiates a PhoneNumber SignIn, brings up an OTPVerificationModal and then the AuthManager changes the screen to the destinationFragment
+  ///
+  ///Please enable Phone Authentication in your Firebase Authentication Console for this to work
+  ///
+  ///Please ensure you have added your SHA-1 and SHA-256 Keys to Firebase
+  ///
+  ///If you want to avoid ReCaptcha Redirect verification, Go to Google Cloud Console, Open your firebase
+  ///project, search Android Device Verification and enable it
+  ///
+  ///The Phone Number must be in the format: +\<country code>\<phone number>
+  ///
+  ///[context] is necessary
+  ///
+  ///[phoneNumber] is the phoneNumber used to login
+  ///
+  ///[onError] is a callback to handle any errors in this process
+  ///
+  ///[onInvalidVerificationCode] is a callback to handle the situation where the OTP is incorrect
   static signInWithPhoneNumber(
     BuildContext context, {
     String phoneNumber,
@@ -352,11 +432,35 @@ class AuthController {
     );
   }
 
+  /// Initiates a logout and the authManager redirects to the loginFragment
+  ///
+  /// [context] is necessary
   static logout(BuildContext context) {
     Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
         .logout();
   }
 
+  /// An easy way to get the Currently Logged in User
+  ///
+  /// [context] is necesssary
+  /// [customMapping] is an optional Function accepting a User as its arguement and returns it in
+  /// a format of your choice, for example creating a custom User Model.
+  ///
+  /// The recieved User will have all its data filled for GoogleSignIn only, for other forms of Auth
+  /// Some of the User Data for example email, displayName etc will be empty.
+  ///
+  /// emailVerified is true only for GoogleSignIn
+  ///
+  /// Example:
+  /// ```dart
+  ///  AuthController.getCurrentUser(
+  ///   context,
+  ///   customMapping: (user) => {
+  ///     'name': user.displayName,
+  ///     'email': user.email,
+  ///   },
+  /// );
+  /// ```
   static getCurrentUser(BuildContext context, {Function(User) customMapping}) {
     final provider =
         Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
@@ -372,10 +476,29 @@ class AuthenticationManager extends StatelessWidget {
   final Widget customWaitingScreen;
   final Color defaultWaitingScreenLoaderColor;
   final Color defaultWaitingScreenBackgroundColor;
+
+  ///An Authentication Gateway for your application
+  ///
+  ///If the User is logged in, it automatically redirects to the destinationFragment
+  ///and if the user is not logged in, it redirects to the loginFragment
+  ///can also accomodate a customWaitingScreen or a default one if needed.
+  ///
+  ///[loginFragment] (required) - The Login View
+  ///
+  ///[destinationFragment] (required) - The Destination View
+  ///
+  ///[customWaitingScreen] if your signIn method allows a waiting screen, you can customize the waiting
+  ///screen using this arguement
+  ///
+  ///[defaultWaitingScreenLoaderColor] if you use the default waiting screen, this arguement changes the
+  ///color of the CircularLoader
+  ///
+  ///[defaultWaitingScreenBackgroundColor] if you use the default waiting screen, this arguement changes the
+  ///background color
   const AuthenticationManager({
     Key key,
-    this.loginFragment,
-    this.destinationFragment,
+    @required this.loginFragment,
+    @required this.destinationFragment,
     this.customWaitingScreen,
     this.defaultWaitingScreenLoaderColor = Colors.white,
     this.defaultWaitingScreenBackgroundColor = Colors.black,
@@ -417,6 +540,21 @@ class AuthenticationManager extends StatelessWidget {
 
 class GlobalFirebaseAuthenticationProvider extends StatelessWidget {
   final Widget child;
+
+  ///Exposes the FirebaseAuthenticationProvider to the whole widget tree
+  ///
+  ///You MUST put this above the MaterialApp widget to ensure the whole widget tree
+  ///has access to the AuthenticationProvider.
+  ///
+  ///This is a compulsary widget as the AuthController and AuthenticationManager depends on it.
+  ///
+  ///Although you won't need it, You can access the FirebaseAuthenticationProvider like this:
+  ///
+  ///```dart
+  ///final provider = Provider.of<FirebaseAuthenticationProvider>(context, listen:false);
+  ///```
+  ///
+  ///[child] is your MaterialApp
   const GlobalFirebaseAuthenticationProvider({Key key, this.child})
       : super(key: key);
 
@@ -429,7 +567,6 @@ class GlobalFirebaseAuthenticationProvider extends StatelessWidget {
   }
 }
 
-//Generic Button To Make your own SignIn Buttons
 class GenericSignInButton extends StatelessWidget {
   final String name;
   final String logoURL;
@@ -437,6 +574,22 @@ class GenericSignInButton extends StatelessWidget {
   final Function(BuildContext) initiator;
   final Color foregroundColor;
   final Color backgroundColor;
+
+  ///A Generic Tempalte to create Custom SignIn Buttons
+  ///
+  ///The Google SignIn Button and the Anonymous SignIn Button use this under the hood
+  ///
+  ///[customString] - If you want a custom text for your button
+  ///
+  ///[name] (required) - The Name of your SignIn Method, Example: Google, Snonymous, Github etc
+  ///
+  ///[logoURL] - The URL to an Image to be used in the button next to the text
+  ///
+  ///[initiator] (required) - A Function that accepts a BuildContext which initiates the SignIn Process
+  ///
+  ///[foregroundColor] - The Text Color
+  ///
+  ///[backgroundColor] - The Background Color
   const GenericSignInButton({
     Key key,
     this.foregroundColor = Colors.white,
@@ -481,7 +634,6 @@ class GenericSignInButton extends StatelessWidget {
   }
 }
 
-//This is the Default Sign In with GoogleButton
 class GoogleSignInButton extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
@@ -489,6 +641,26 @@ class GoogleSignInButton extends StatelessWidget {
   final bool signInWithRedirect;
   final Function(String) onError;
   final Function onSignInSuccessful;
+
+  ///A Ready-To-Use GoogleSignIn Button
+  ///
+  ///Just add this widget to your Widget tree and It will handle GoogleSignIn via the AuthManager and AuthController
+  ///
+
+  ///[signInWithRedirect] (default false) is a boolean that is Flutter Web only and basically allows you to chose if you want your
+  ///OAuth Screen to be a popup or a redirect. Setting this to true, will use a redirect
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[onError] a Callback for any Error that may occur
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  ///
+  ///[foregroundColor] is the Text Color (default black)
+  ///
+  ///[backgroundColor] is the Background Color (default White)
   const GoogleSignInButton({
     Key key,
     this.foregroundColor = Colors.white,
@@ -519,6 +691,15 @@ class GoogleSignInButton extends StatelessWidget {
   }
 }
 
+/// A Ready-To-Use Anonymous SignIn Button
+///
+///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+///on how you have setup your AuthManager.
+///
+///[foregroundColor] is the Text Color (default black)
+///
+///[backgroundColor] is the Background Color (default White)
 class AnonymousSignInButton extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
