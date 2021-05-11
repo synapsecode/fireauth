@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="fireflutter_test">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+   <!--GoogleSignInClientID-->
+  <meta name="google-signin-client_id" content="250244166672-gmnv9nbgs0pnb68bjrc633hdegao43eb.apps.googleusercontent.com">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>example</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!--To Remove RecaptchaV3 from PhoneAuthentication & Other Style Stuff-->
+  <style>
+    .grecaptcha-badge { visibility: hidden; }
+  </style>
+</head>
+<body>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+
+  <!--Additional Firebase Imports-->
+  <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
+
+  <!--Firebase Web Configuration-->
+  <script>
+    var firebaseConfig = {
+    apiKey: "AIzaSyCFFuS8iQy0HA_6PhHbBRY08hI3zmMDEI0",
+    authDomain: "general-fireinstance.firebaseapp.com",
+    projectId: "general-fireinstance",
+    storageBucket: "general-fireinstance.appspot.com",
+    messagingSenderId: "250244166672",
+    appId: "1:250244166672:web:e8f95a2c504f4482658695",
+    measurementId: "G-WSNXC59R4T"
+  };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
+  <!--Installing Service Worker for Flutter PWA-->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('flutter-first-frame', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>

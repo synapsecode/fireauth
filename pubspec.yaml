@@ -1,8 +1,8 @@
 name: fireauth
-description: A new Flutter package project.
+description: A Flutter Package that aims to simplify Flutter Firebase Authentication and streamline development.
 version: 0.0.1
-author:
-homepage:
+author: Manas Hejmadi<manashejmadi@gmail.com>
+homepage: https://github.com/synapsecode/fireauth.git
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -11,6 +11,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  #Firebase Dependencies
+  firebase_core: "0.7.0"
+  firebase_auth: "^0.20.1"
+  google_sign_in: "^4.5.1"
+  provider: "^5.0.0"
+  cloud_firestore: "^0.16.0+1"
+
+  toast:
 
 dev_dependencies:
   flutter_test:
