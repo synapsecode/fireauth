@@ -58,16 +58,17 @@ import 'package:fireauth/fireauth.dart';
         <meta name="google-signin-client_id" content="<REPLACE WITH CLIENTID>">
         ```
 * **(To Remove ReCaptcha Verification for Phone Authentication)**
+     * **(Android)** Go to [Google Cloud Platform Console](https://console.cloud.google.com/) open the correct GCP Project, search for Android Device Verification API and enable it. **(NOTE: This needs to be done even if you have used FireSetup)**
+     
     * **(Web)** Go the flutter project > web > index.html and add this in the head section:
     
-    
-        ```html
-        <style>
-          .grecaptcha-badge { visibility: hidden; }
-        </style>
-        ```
-    
-    * **(Android)** Go to [Google Cloud Platform Console](https://console.cloud.google.com/) open the correct GCP Project, search for Android Device Verification API and enable it. **(NOTE: This needs to be done even if you have used FireSetup)**
+      ```html
+      <style>
+        .grecaptcha-badge { visibility: hidden; }
+      </style>
+      ```
+
+   
     
 # Usage
 
