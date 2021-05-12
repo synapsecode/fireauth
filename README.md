@@ -82,10 +82,105 @@ void main() async {
      
 ## Step 2: Wrapping your Material App with GlobalFirebaseAuthenticationProvider
 ```dart
- //Allows the Authentication Methods to be accessible from anywhere in the widget tree
- return GlobalFirebaseAuthenticationProvider(
-  child: MaterialApp(
-    home: AppOrigin(),
+//Allows the Authentication Methods to be accessible from anywhere in the widget tree
+return GlobalFirebaseAuthenticationProvider(
+ child: MaterialApp(
+   home: AppOrigin(),
+ ),
+);
+```
+
+## Step 3: Using the AuthenticationManager
+```dart
+//This basically acts like a Gateway, If youre logged in, it shows the destinationFragment
+//else it shows the loginFragment (It Remembers the Authentication State too!)
+
+return AuthenticationManager(
+  loginFragment: LoginPage(),
+  destinationFragment: HomePage(),
+  
+  //Other Arguements can be explored in the ID, documentation has been provided
+);
+```
+
+## Using the AuthController
+The AuthController is a Dart class that contains several static methods that exposes useful functions!
+
+### Sign In With Google
+```dart
+AuthController.signInWithGoogle(
+  context,
+  signInWithRedirect: false,
+  enableWaitingScreen: false,
+  onError: (String e) {
+    print(e);
+  },
+),
+```
+
+### Anonymous SignIn
+```dart
+  AuthController.signInAnonymously(
+    context,
+    enableWaitingScreen: false,
   ),
+```
+
+### Phone SignIn
+```dart
+AuthController.signInWithPhoneNumber(
+    context,
+    phoneNumber: phoneNumberController.value.text,
+    onError: (e) {
+      ...
+    },
+    onInvalidVerificationCode: () {
+      ...
+    },
+  );
+},
+```
+
+### Register & Login With Email & Password
+```dart
+AuthController.registerWithEmailAndPassword(
+  context,
+  email: "example@email.com",
+  password: "abc123",
+  onError: (String e) {
+    ...
+  },
+);
+```
+
+### SignIn With Email & Password
+```dart
+AuthController.signInWithEmailAndPassword(
+  context,
+  email: "example@email.com",
+  password: "abc123",
+  onError: (String e) {
+    ...
+  },
+  onIncorrectCredentials: () {
+    ...
+  },
+);
+```
+
+### Logout
+```dart
+AuthController.logout(context);
+```
+
+### Get Current User
+```dart
+AuthController.getCurrentUser(
+  context,
+  //Optional Arguement, if not provided, It just returns a Firebase User
+  customMapping: (user) => {
+    'name': user.displayName,
+    'email': user.email,
+  },
 );
 ```
