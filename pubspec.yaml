@@ -13,13 +13,13 @@ dependencies:
     sdk: flutter
 
   #Firebase Dependencies
-  firebase_core: "0.7.0"
+  firebase_core: "^0.7.0"
   firebase_auth: "^0.20.1"
   google_sign_in: "^4.5.1"
   provider: "^5.0.0"
   cloud_firestore: "^0.16.0+1"
 
-  toast:
+  toast: "^0.1.5"
 
 dev_dependencies:
   flutter_test:
