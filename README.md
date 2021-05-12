@@ -22,9 +22,9 @@ import 'package:fireauth/fireauth.dart';
 ```
 
 ## Platform Support
-* Flutter (Android, iOS)
-* Flutter Web
-* Desktop is not supported because of lack of Firebase Support for Desktop
+* Android
+* iOS (Not Tested & Probably has bugs)
+* Web
 
 ## Currently Supported Authentication Methods:
 * Google
@@ -34,7 +34,7 @@ import 'package:fireauth/fireauth.dart';
 
 ## Prerequisites:
 * Create a new flutter project
-* Create a new Firebase Project and Add it to your project or use [My FireSetup Python Utility]() to do it easily.
+* Create a new Firebase Project and Add it to your project or use [My FireSetup Python Utility](https://github.com/synapsecode/FireSetup) to do it easily.
 * Add your SHA-1 & SHA-256 Key to Firebase in your App Settings on the Firebase Console. Here is how you do it:
 
     Go to your /android folder in the flutter project, open terminal and type this:
@@ -47,7 +47,7 @@ import 'package:fireauth/fireauth.dart';
     **(This is required for GoogleSignIn and PhoneSignIn)**
 * Enable all the Authentication Methods needed in the Firebase Authentication Console (example: Phone, Google, etc)
 
-## Optional Prerequisites:
+## Optional Prerequisites (Not Needed if you used [FireSetup](https://github.com/synapsecode/FireSetup)):
 * **(For Google SignIn on Flutter Web)**
     * Go to [Google Cloud Platform Console](https://console.cloud.google.com/) and Open your Google Account Associated with Firebase
     * Open your GCP project with the same name as your firebase project and search for Credentials
@@ -67,7 +67,7 @@ import 'package:fireauth/fireauth.dart';
         </style>
         ```
     
-    * **(Android)** Go to [Google Cloud Platform Console](https://console.cloud.google.com/) open the correct GCP Project, search for Android Device Verification API and enable it
+    * **(Android)** Go to [Google Cloud Platform Console](https://console.cloud.google.com/) open the correct GCP Project, search for Android Device Verification API and enable it. **(NOTE: This needs to be done even if you have used FireSetup)**
     
 # Usage
 
@@ -106,12 +106,12 @@ return AuthenticationManager(
 ## Using the AuthController
 The AuthController is a Dart class that contains several static methods that exposes useful functions!
 
+For more information on these methods, take a look at them using the IDE, they are very well documented, but this is all you need for it to work in the default way
+
 ### Sign In With Google
 ```dart
 AuthController.signInWithGoogle(
   context,
-  signInWithRedirect: false,
-  enableWaitingScreen: false,
   onError: (String e) {
     print(e);
   },
@@ -120,10 +120,7 @@ AuthController.signInWithGoogle(
 
 ### Anonymous SignIn
 ```dart
-  AuthController.signInAnonymously(
-    context,
-    enableWaitingScreen: false,
-  ),
+  AuthController.signInAnonymously(context),
 ```
 
 ### Phone SignIn
@@ -183,4 +180,22 @@ AuthController.getCurrentUser(
     'email': user.email,
   },
 );
+```
+
+## Other Widgets
+
+### GoogleSignIn Button
+If you just want a ready to use button that enables Google SignIn, This is the Widget you're looking for!
+
+```dart
+//has some additional arguements that you can see from your IDE, as it is very well documented
+GoogleSignInButton()
+```
+
+### Anonymous SignIn Button
+If you just want a ready to use button that enables Anonymous SignIn, This is the Widget you're looking for!
+
+```dart
+//has some additional arguements that you can see from your IDE, as it is very well documented
+AnonymousSignInButton()
 ```
