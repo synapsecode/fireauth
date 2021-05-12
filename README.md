@@ -99,7 +99,7 @@ return AuthenticationManager(
   loginFragment: LoginPage(),
   destinationFragment: HomePage(),
   
-  //Other Arguements can be explored in the ID, documentation has been provided
+  //Other Arguements can be explored in the IDE, documentation has been provided
 );
 ```
 
