@@ -507,25 +507,25 @@ class AuthenticationManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FirebaseAuthenticationProvider>(context);
+    final Widget defaultWaitingScreen = Container(
+      color: defaultWaitingScreenBackgroundColor,
+      child: Stack(
+        children: [
+          Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                defaultWaitingScreenLoaderColor,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
     return StreamBuilder(
       stream: provider.authInstance.authStateChanges(),
       builder: (context, snapshot) {
         if (provider.isWaitingForSignInCompletion) {
-          return customWaitingScreen ??
-              Container(
-                color: defaultWaitingScreenBackgroundColor,
-                child: Stack(
-                  children: [
-                    Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          defaultWaitingScreenLoaderColor,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
+          return customWaitingScreen ?? defaultWaitingScreen;
         } else {
           if (snapshot.hasData) {
             return destinationFragment;
@@ -665,8 +665,8 @@ class GoogleSignInButton extends StatelessWidget {
     Key key,
     this.foregroundColor = Colors.white,
     this.backgroundColor = Colors.black,
-    this.enableWaitingScreen,
-    this.signInWithRedirect,
+    this.enableWaitingScreen = false,
+    this.signInWithRedirect = false,
     this.onError,
     this.onSignInSuccessful,
   }) : super(key: key);
@@ -678,7 +678,7 @@ class GoogleSignInButton extends StatelessWidget {
       initiator: (context) => AuthController.signInWithGoogle(
         context,
         signInWithRedirect: signInWithRedirect ?? false,
-        enableWaitingScreen: enableWaitingScreen ?? true,
+        enableWaitingScreen: enableWaitingScreen ?? false,
         onSignInSuccessful: onSignInSuccessful,
         onError: (String e) {
           if (onError != null) onError(e);
