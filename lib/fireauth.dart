@@ -19,6 +19,11 @@ initializeFirebase() async {
   }
 }
 
+class AuthErrors {
+  static final String wrongPassword = '[firebase_auth/wrong-password]';
+  static final String invalidOTP = '[firebase_auth/invalid-verification-code]';
+}
+
 /// This ChangeNotifier exposes the entire Authentication System
 class FirebaseAuthenticationProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,7 +42,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     bool allowSignInWithRedirect = false,
     bool enableWaitingScreen = true,
     Function(String) onError,
-    Function onSignInSuccessful,
+    Function(User) onSignInSuccessful,
   }) async {
     User recievedUser;
     if (enableWaitingScreen) isWaitingForSignInCompletion = true;
@@ -67,8 +72,9 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
             await FirebaseAuth.instance.signInWithCredential(credential);
         recievedUser = userCred.user;
       }
-      if (onSignInSuccessful != null) onSignInSuccessful();
-      print("GoogleSignInUser -> ${recievedUser?.email}");
+      if (onSignInSuccessful != null && recievedUser != null)
+        onSignInSuccessful(recievedUser);
+      // print("GoogleSignInUser -> ${recievedUser?.email}");
     } catch (e) {
       if (!e.toString().contains('isNewUser') && !allowSignInWithRedirect) {
         if (onError != null)
@@ -83,11 +89,16 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
   //============================</Google SignIn>=========================
 
   //=============================<Anonymous SignIN>=========================
-  Future signInAnonymously({bool enableWaitingScreen}) async {
+  Future signInAnonymously({
+    bool enableWaitingScreen,
+    Function(User) onSignInSuccessful,
+  }) async {
     try {
       if (enableWaitingScreen) isWaitingForSignInCompletion = true;
       UserCredential userCred = await _auth.signInAnonymously();
       isWaitingForSignInCompletion = false;
+      if (onSignInSuccessful != null && userCred != null)
+        onSignInSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
       print("AuthenticationError(Anonymous): $e");
@@ -102,12 +113,15 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     String email,
     String password,
     Function(String) onError,
+    Function(User) onRegisterSuccessful,
   }) async {
     try {
       UserCredential userCred = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (onRegisterSuccessful != null && userCred != null)
+        onRegisterSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
       print("RegisterError(Email&Password): $e");
@@ -122,15 +136,18 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     String password,
     Function onIncorrectCredentials,
     Function(String) onError,
+    Function(User) onSignInSuccessful,
   }) async {
     try {
       UserCredential userCred = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (onSignInSuccessful != null && userCred != null)
+        onSignInSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
-      if (e.toString().contains('[firebase_auth/wrong-password]')) {
+      if (e.toString().contains(AuthErrors.wrongPassword)) {
         print("Incorrect Email Or Password");
         if (onIncorrectCredentials != null) onIncorrectCredentials();
       } else {
@@ -148,13 +165,19 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     String phoneNumber,
     Function onInvalidVerificationCode,
     Function(String) onError,
+    Function(User) onSignInSuccessful,
+    bool closeVerificationPopupAfterSubmit,
+    bool enableDebugLog = true,
+    bool showInitiationToast = true,
   }) async {
     TextEditingController ctr = TextEditingController();
     UserCredential userCred;
 
+    final log = (String x) => enableDebugLog ? print(x) : null;
+
     Widget generatePhoneVerificationDialog({
-      Function(String) onSubmit,
-      bool closeAfterSubmit = true,
+      Future<bool> Function(String) onSubmit,
+      bool closeVerificationPopupAfterSubmit = true,
     }) {
       return AlertDialog(
         title: Text('Verify Phone'),
@@ -171,8 +194,11 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.black),
               onPressed: () async {
-                if (closeAfterSubmit) Navigator.pop(context);
-                onSubmit(ctr.value.text);
+                if (closeVerificationPopupAfterSubmit) Navigator.pop(context);
+                bool isDone = await onSubmit(ctr.value.text);
+                if (!closeVerificationPopupAfterSubmit) {
+                  if (isDone) Navigator.pop(context);
+                }
               },
               child: Text("Verify"),
             ),
@@ -181,13 +207,15 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
       );
     }
 
-    if (kIsWeb) {
+    if (showInitiationToast)
       Toast.show(
         "Initating SignIn...Please Wait",
         context,
         duration: Toast.LENGTH_LONG,
         gravity: Toast.BOTTOM,
       );
+
+    if (kIsWeb) {
       //The Web Flow
       try {
         ConfirmationResult confirmationResult =
@@ -196,93 +224,142 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
           context: context,
           builder: (context) {
             return generatePhoneVerificationDialog(
+              closeVerificationPopupAfterSubmit:
+                  closeVerificationPopupAfterSubmit ?? true,
               onSubmit: (smsCode) async {
-                print(smsCode);
+                bool isDone = false; //FutureReturnValue
                 try {
                   userCred = await confirmationResult.confirm(smsCode);
+                  isDone = true;
                 } catch (ex) {
                   String fx = ex.toString();
-                  if (fx
-                      .contains('[firebase_auth/invalid-verification-code]')) {
-                    print("Invalid Verification Code");
-                    if (onInvalidVerificationCode != null)
+                  if (fx.contains(AuthErrors.invalidOTP)) {
+                    log("Invalid Verification Code");
+
+                    //Invalid Verification Code Callback
+                    if (onInvalidVerificationCode != null) {
                       onInvalidVerificationCode();
+                    }
                   }
                 }
+                //Successful SignIn Callback
+                if (onSignInSuccessful != null && userCred != null) {
+                  onSignInSuccessful(userCred.user);
+                }
+
+                return isDone;
               },
             );
           },
         );
       } catch (e) {
-        if (onError != null)
+        if (onError != null) {
           onError(e.toString());
-        else
-          print("Web-AuthenticationError(Phone): $e");
+        } else {
+          log("Web-AuthenticationError(Phone): $e");
+        }
       }
     } else {
       //The Native Flow
-      print("Clicked");
-      Toast.show(
-        "Initating SignIn...Please Wait",
-        context,
-        duration: Toast.LENGTH_LONG,
-        gravity: Toast.BOTTOM,
-      );
+      log("Clicked on Phone Authentication");
+
       try {
-        await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          verificationCompleted: (PhoneAuthCredential credential) async {
+        final autoRetrieve = (String vID) {
+          log("autoRetrieve :: VerificationCode is $vID}");
+        };
+
+        final verificationCompleted = (PhoneAuthCredential credential) async {
+          log("VerificationCompleted");
+          Navigator.pop(context); //To Remove Dialog when AutoSMS Verified
+          try {
             await _auth.signInWithCredential(credential);
-          },
-          verificationFailed: (FirebaseAuthException e) {
-            print(
-                'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
-          },
-          codeSent: (String verificationId, int resendToken) {
-            //Showing verification Screen
-            showDialog(
-              context: context,
-              builder: (context) {
-                return generatePhoneVerificationDialog(
-                  onSubmit: (smsCode) async {
-                    Navigator.pop(context);
-                    try {
-                      AuthCredential credential = PhoneAuthProvider.credential(
-                          verificationId: verificationId, smsCode: smsCode);
-                      userCred = await _auth.signInWithCredential(credential);
-                    } catch (fx) {
-                      if (fx.toString().contains(
-                          '[firebase_auth/invalid-verification-code]')) {
-                        if (onInvalidVerificationCode != null)
-                          onInvalidVerificationCode();
-                        else
-                          print("Incorrect SMSCode or OTP");
-                      } else {
-                        print("InnerAuthenticationError(Phone): $fx");
-                        if (onError != null) onError(fx.toString());
-                      }
+          } catch (e) {
+            if (onError != null) onError(e.toString());
+            log('Error at func: verificationCompleted ::=> ${e.toString()}');
+          }
+        };
+
+        final verificationFailed = (FirebaseAuthException e) {
+          if (onError != null) onError(e.toString());
+          log(
+            'Phone number verification failed. Code: ${e.code}. Message: ${e.message}',
+          );
+        };
+
+        final onCodeSent = (String verificationId, int resendToken) {
+          log("onCodeSent :: OTP Has been sent");
+          showDialog(
+            context: context,
+            builder: (context) {
+              return generatePhoneVerificationDialog(
+                closeVerificationPopupAfterSubmit:
+                    closeVerificationPopupAfterSubmit ?? true,
+                onSubmit: (smsCode) async {
+                  bool isDone = false; //FutureReturnValue
+                  try {
+                    AuthCredential credential = PhoneAuthProvider.credential(
+                      verificationId: verificationId,
+                      smsCode: smsCode,
+                    );
+                    userCred = await _auth.signInWithCredential(credential);
+                    isDone = true; //To Show that Login Was Successful
+
+                    //Successful SignIn Callback
+                    if (onSignInSuccessful != null && userCred != null) {
+                      onSignInSuccessful(userCred.user);
                     }
-                  },
-                  closeAfterSubmit: false,
-                );
-              },
-            );
+                  } catch (e) {
+                    String error = e.toString();
+
+                    if (error.contains(AuthErrors.invalidOTP)) {
+                      if (onInvalidVerificationCode != null)
+                        onInvalidVerificationCode();
+                      else
+                        log("Incorrect OTP");
+                    } else {
+                      log("InnerAuthenticationError(Phone): $error");
+                      if (onError != null) onError(error.toString());
+                    }
+                  }
+                  return isDone;
+                },
+              );
+            },
+          );
+        };
+
+        //Calling the Verify Phone Number Method & Catching Async Errors
+        FirebaseAuth.instance
+            .verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: onCodeSent,
+          codeAutoRetrievalTimeout: autoRetrieve,
+        )
+            .then(
+          (_) {
+            log("Future<VerifyPhoneNumber> complete");
           },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            print("VerificationCode is $verificationId}");
+        ).onError(
+          (error, stackTrace) {
+            log("Error at func: Future<VerifyPhoneNumber> ::=> " +
+                error.toString());
+            if (onError != null) onError(error.toString());
           },
         );
       } catch (e) {
         if (onError != null) onError(e.toString());
-        print("AuthenticationError(Phone): $e");
+        log("AuthenticationError(Phone): $e");
       }
     }
     return userCred?.user;
   }
   //============================</Phone Authentication>=========================
 
-  logout() async {
+  logout({Function onLogout}) async {
     await FirebaseAuth.instance.signOut();
+    if (onLogout != null) onLogout();
     isWaitingForSignInCompletion = false; //To Update ChangeNotifier
     print("Logged Out");
   }
@@ -336,9 +413,14 @@ class AuthController {
   ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
   ///on how you have setup your AuthManager.
   ///
-  static signInAnonymously(BuildContext context, {bool enableWaitingScreen}) {
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  static signInAnonymously(BuildContext context,
+      {bool enableWaitingScreen, Function(User) onSignInSuccessful}) {
     Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
-        .signInAnonymously(enableWaitingScreen: enableWaitingScreen ?? true);
+        .signInAnonymously(
+      enableWaitingScreen: enableWaitingScreen ?? true,
+      onSignInSuccessful: onSignInSuccessful,
+    );
   }
 
   ///Registers the Email and Password Combination on Firebase
@@ -354,17 +436,21 @@ class AuthController {
   ///[password] is also required and is self-explanatory
   ///
   ///[onError] is a callback to handle any errors during the process
+  ///
+  ///[onRegisterSuccessful] a Callback to perform any action after a successful SignIn
   static registerWithEmailAndPassword(
     BuildContext context, {
     @required String email,
     @required String password,
     Function(String) onError,
+    Function(User) onRegisterSuccessful,
   }) {
     Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
         .registerWithEmailAndPassword(
       email: email,
       password: password,
       onError: onError,
+      onRegisterSuccessful: onRegisterSuccessful,
     );
   }
 
@@ -381,12 +467,15 @@ class AuthController {
   ///[onError] is a callback to handle any errors during the process
   ///
   ///[onIncorrectCredentials] is a callback to handle incorrect credentials
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
   static signInWithEmailAndPassword(
     BuildContext context, {
     @required String email,
     @required String password,
     Function(String) onError,
     Function onIncorrectCredentials,
+    Function(User) onSignInSuccessful,
   }) {
     Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
         .signInWithEmailAndPassword(
@@ -394,6 +483,7 @@ class AuthController {
       password: password,
       onError: onError,
       onIncorrectCredentials: onIncorrectCredentials,
+      onSignInSuccessful: onSignInSuccessful,
     );
   }
 
@@ -415,11 +505,18 @@ class AuthController {
   ///[onError] is a callback to handle any errors in this process
   ///
   ///[onInvalidVerificationCode] is a callback to handle the situation where the OTP is incorrect
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  ///
+  ///[closeVerificationPopupAfterSubmit] a boolean which when true, closes the OTP Verification Dialog after an attempt and if
+  ///false leaves it open, basically if the User Wants to Retry
   static signInWithPhoneNumber(
     BuildContext context, {
     String phoneNumber,
     Function(String) onError,
     Function onInvalidVerificationCode,
+    Function(User) onSignInSuccessful,
+    bool closeVerificationPopupAfterSubmit = false,
   }) async {
     final provider =
         Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
@@ -428,15 +525,20 @@ class AuthController {
       phoneNumber: phoneNumber,
       onError: onError,
       onInvalidVerificationCode: onInvalidVerificationCode,
+      onSignInSuccessful: onSignInSuccessful,
+      closeVerificationPopupAfterSubmit: closeVerificationPopupAfterSubmit,
     );
   }
 
   /// Initiates a logout and the authManager redirects to the loginFragment
   ///
   /// [context] is necessary
-  static logout(BuildContext context) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
-        .logout();
+  ///
+  /// [onLogout] is a callback function that is called immediately after a logout
+  static logout(BuildContext context, {Function onLogout}) {
+    Provider.of<FirebaseAuthenticationProvider>(context, listen: false).logout(
+      onLogout: onLogout,
+    );
   }
 
   /// An easy way to get the Currently Logged in User
@@ -639,7 +741,7 @@ class GoogleSignInButton extends StatelessWidget {
   final bool enableWaitingScreen;
   final bool signInWithRedirect;
   final Function(String) onError;
-  final Function onSignInSuccessful;
+  final Function(User) onSignInSuccessful;
 
   ///A Ready-To-Use GoogleSignIn Button
   ///
@@ -703,11 +805,13 @@ class AnonymousSignInButton extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
   final bool enableWaitingSceeen;
+  final Function(User) onSignInSuccessful;
   const AnonymousSignInButton({
     Key key,
     this.foregroundColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.enableWaitingSceeen,
+    this.onSignInSuccessful,
   }) : super(key: key);
 
   @override
@@ -717,6 +821,7 @@ class AnonymousSignInButton extends StatelessWidget {
       initiator: (context) => AuthController.signInAnonymously(
         context,
         enableWaitingScreen: enableWaitingSceeen ?? true,
+        onSignInSuccessful: onSignInSuccessful,
       ),
       logoURL: 'https://i.ibb.co/jRSsZtN/36006-5-anonymous.png',
       backgroundColor: backgroundColor,

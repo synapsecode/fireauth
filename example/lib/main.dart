@@ -88,6 +88,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   );
                 },
+                //Callback for a Successful SignIn
+                onSignInSuccessful: (user) {
+                  print(
+                    "Google SignIn Successful!!! Name: ${user.displayName}",
+                  );
+                },
               ),
               //Incase you want to make a new Button for GoogleSignIn, you can use this method:
               /*
@@ -104,6 +110,12 @@ class _LoginPageState extends State<LoginPage> {
               //FireAuth Provided AnonymousSignInButton you can customize the colors if needed
               AnonymousSignInButton(
                 enableWaitingSceeen: false,
+                //Callback for a Successful SignIn
+                onSignInSuccessful: (user) {
+                  print(
+                    "Anonymous SignIn Successful!!! UID: ${user.uid}",
+                  );
+                },
               ),
               //Incase you want your own AnonymousSignInButton then use this method:
               /*
@@ -158,6 +170,13 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             );
                           },
+                          closeVerificationPopupAfterSubmit: false,
+                          //Callback for a Successful SignIn
+                          onSignInSuccessful: (user) {
+                            print(
+                              "PhoneSignIn Successful!!! Phone: ${user.phoneNumber}",
+                            );
+                          },
                         );
                       },
                       foregroundColor: Colors.white,
@@ -210,6 +229,10 @@ class _LoginPageState extends State<LoginPage> {
                                 content: Text(e),
                               ),
                             );
+                          },
+                          onRegisterSuccessful: (user) {
+                            print(
+                                "Successfully Registered Email: ${user.email}");
                           },
                         );
                       },
@@ -272,6 +295,12 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             );
                           },
+                          //Callback for a Successful SignIn
+                          onSignInSuccessful: (user) {
+                            print(
+                              "Email SignIn Successful!!! Email: ${user.email}",
+                            );
+                          },
                         );
                       },
                       child: Text("Login"),
@@ -283,7 +312,9 @@ class _LoginPageState extends State<LoginPage> {
               // Use AuthController.logout(context) to logout from anywhere
               GenericSignInButton(
                 name: 'Logout',
-                initiator: (context) => AuthController.logout(context),
+                initiator: (context) => AuthController.logout(
+                  context,
+                ),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.red[700],
                 customString: 'Logout',
@@ -309,7 +340,12 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              AuthController.logout(context);
+              AuthController.logout(
+                context,
+                onLogout: () {
+                  print("Logout Successful");
+                },
+              );
             },
           ),
           IconButton(
