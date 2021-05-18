@@ -16,3 +16,10 @@
 * Added a success callback to all AuthController static methods
 * Removed AndroidX BrowserImplementation in app level build.gradle (example app)
 * (example > main.dart) Added success callback examples
+
+* Has Some Error; Fails to Recognize Auth State on Reload
+
+## [0.0.2+1] - 2021-05-18
+
+* Auto Versioning using Image Picker
+* using idTokenChanges

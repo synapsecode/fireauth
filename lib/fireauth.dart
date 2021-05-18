@@ -623,7 +623,7 @@ class AuthenticationManager extends StatelessWidget {
       ),
     );
     return StreamBuilder(
-      stream: provider.authInstance.authStateChanges(),
+      stream: provider.authInstance.idTokenChanges(),
       builder: (context, snapshot) {
         if (provider.isWaitingForSignInCompletion) {
           return customWaitingScreen ?? defaultWaitingScreen;
