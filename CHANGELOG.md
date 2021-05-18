@@ -23,3 +23,9 @@
 
 * Auto Versioning using Image Picker
 * using idTokenChanges
+
+* Has Some Error; Fails to Recognize Auth State on Reload
+
+## [0.0.3] - 2021-05-18
+
+* Added Specific Versioning Again
