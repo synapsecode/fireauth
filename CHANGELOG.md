@@ -40,3 +40,8 @@ solutions
 ## [0.0.4+1] - 2021-05-28
 
 * UpgradedFirebaseVersioning After a successful test dry-run
+
+## [0.0.4+2] - 2021-05-28
+
+* The 0.0.4+1 was a throwaway version and virtually same as 0.0.3
+* This one introduces absolute versions of the firebase plugins
