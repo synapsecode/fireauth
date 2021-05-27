@@ -36,3 +36,7 @@
 I have gone back to firebase_core version 0.7.0 and firebase_auth version 0.20.1
 * Updates will be made if there's a fix for the Dart-SDK Bug or I come up with a temporary
 solutions
+
+## [0.0.4+1] - 2021-05-28
+
+* UpgradedFirebaseVersioning After a successful test dry-run
