@@ -1,47 +1,30 @@
-## [0.0.1] - 2021-05-12
+## 0.0.5-legacy (STABLE)
 
-* Enabled Mail, Anonymous, Google and Phone Authentication
-* Added Documentation
+- **(Stable Version)**
+- **(Note)**: fireauth will continue to support -legacy versions in future releases. This version is basically a pure version and doesn't suffer from the DartWebSDK + FirebaseAuth + StreamBuilder Hot Restart Bug as the firebase version is older.
+- If you are getting dependency clashes because of the older version of firebase plugins used here, then consider upgrading to v0.0.5 or the frozen version of the same.
 
-## [0.0.1+1] - 2021-05-12
+## 0.0.4
 
-* Updated README and documentation
+- **(Stable Version)**
+- **FIX**: Upon Learning that there is a Dart SDK Bug regarding Hot Reload in Flutter Web,
+I have gone back to firebase_core version ^0.7.0 and firebase_auth version ^0.20.1
+- **Update**: (+2) Tested Single Version combination for firebase plugins. Will be implemented in next build (v0.0.5-frozen)
+- Same as v0.0.1 with all the improvements of v0.0.2 but without its Hot Restart bug
 
-## [0.0.2] - 2021-05-18
+## 0.0.2
 
-* Updated all the Firebase Dependencies to a combination that works
-* FireAuth Phone Authentication: Mobile onError Callbacks work
-* FireAuth Phone Authentication: VerificationDialog closes on verificationCompleted
-* Generic Code Improvements
-* Added a success callback to all AuthController static methods
-* Removed AndroidX BrowserImplementation in app level build.gradle (example app)
-* (example > main.dart) Added success callback examples
+- **(Deprecated Version)**
+- **FLAW**: Updated firebase dependencies to stable pair
+- **FIX**: PhoneAuth: Mobile onError Callback now Works
+- **FEAT**: PhoneAuth: VerificationDialog closes on verificationCompleted
+- **FEAT**: Added a success callback for AuthController static methods
+- **DOCS**: Added success callback examples in example app
+- **WARNING**: This version has a specific DartWebSDK bug that prevents AuthenticationManager
+from working correctly during Hot restart on Web. Doesn't exist in Release Mode or on Mobile.
 
-* Has Some Error; Fails to Recognize Auth State on Reload
+## 0.0.1
 
-## [0.0.2+1] - 2021-05-18
-
-* Auto Versioning using Image Picker
-* using idTokenChanges
-
-* Has Some Error; Fails to Recognize Auth State on Reload
-
-## [0.0.3] - 2021-05-18
-
-* Added Specific Versioning Again
-
-## [0.0.4] - 2021-05-26
-
-* Upon Learning that there is a Dart SDK Bug regarding Hot Reload in Flutter Web,
-I have gone back to firebase_core version 0.7.0 and firebase_auth version 0.20.1
-* Updates will be made if there's a fix for the Dart-SDK Bug or I come up with a temporary
-solutions
-
-## [0.0.4+1] - 2021-05-28
-
-* UpgradedFirebaseVersioning After a successful test dry-run
-
-## [0.0.4+2] - 2021-05-28
-
-* The 0.0.4+1 was a throwaway version and virtually same as 0.0.3
-* This one introduces absolute versions of the firebase plugins
+- **(Stable Version)**
+- **FEAT**: Enabled Mail, Anonymous, Google & Phone Authentication
+- **DOCS**: Added Exhaustive Documentation
