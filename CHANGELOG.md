@@ -1,8 +1,11 @@
-## 0.0.5-legacy (STABLE)
+## 0.0.5
 
 - **(Stable Version)**
-- **(Note)**: fireauth will continue to support -legacy versions in future releases. This version is basically a pure version and doesn't suffer from the DartWebSDK + FirebaseAuth + StreamBuilder Hot Restart Bug as the firebase version is older.
-- If you are getting dependency clashes because of the older version of firebase plugins used here, then consider upgrading to v0.0.5 or the frozen version of the same.
+- **FIX**: Contains a Hot Restart Bypass for the AuthManager for the Web Platform only - This was to bypass the DartWebSDK bug where Hot Restart doesn't work as expected with StreamBuilder and FirebaseAuth
+
+- **(v0.0.5-legacy)**: Contains the older versions of the firebase plugins (^0.7.0 for core and ^0.20.1 for auth)
+- **(v0.0.5-frozen)**: Contains version 1.1.0 for auth and 1.0.3 for core
+- **(v0.0.5-dev)**: A Pre-Release Test of the HotRestartByPassMechanism for the DartWebSDKBug
 
 ## 0.0.4
 

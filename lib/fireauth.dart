@@ -1,9 +1,10 @@
 library fireauth;
 
+import 'package:fireauth/util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:toast/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ import 'package:provider/provider.dart';
 /// and convert your main method into an async main method.
 initializeFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
+  if (!Foundation.kIsWeb) {
     await Firebase.initializeApp();
   }
 }
@@ -47,7 +48,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     User recievedUser;
     if (enableWaitingScreen) isWaitingForSignInCompletion = true;
     try {
-      if (kIsWeb) {
+      if (Foundation.kIsWeb) {
         //Web Platform Only GoogleSignIn
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         UserCredential userCred;
@@ -72,6 +73,14 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
             await FirebaseAuth.instance.signInWithCredential(credential);
         recievedUser = userCred.user;
       }
+
+      //======================HOT RESTART BUG BYPASS===========================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      await HotRestartBypassMechanism.saveUserInformation(
+        recievedUser,
+      );
+      //======================HOT RESTART BUG BYPASS===========================
+
       if (onSignInSuccessful != null && recievedUser != null)
         onSignInSuccessful(recievedUser);
       // print("GoogleSignInUser -> ${recievedUser?.email}");
@@ -97,6 +106,14 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
       if (enableWaitingScreen) isWaitingForSignInCompletion = true;
       UserCredential userCred = await _auth.signInAnonymously();
       isWaitingForSignInCompletion = false;
+
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      await HotRestartBypassMechanism.saveUserInformation(
+        userCred.user,
+      );
+      //======================HOT RESTART BUG BYPASS============================
+
       if (onSignInSuccessful != null && userCred != null)
         onSignInSuccessful(userCred.user);
       return userCred.user;
@@ -120,6 +137,14 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
+
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      await HotRestartBypassMechanism.saveUserInformation(
+        userCred.user,
+      );
+      //======================HOT RESTART BUG BYPASS============================
+
       if (onRegisterSuccessful != null && userCred != null)
         onRegisterSuccessful(userCred.user);
       return userCred.user;
@@ -143,6 +168,14 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
+
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      await HotRestartBypassMechanism.saveUserInformation(
+        userCred.user,
+      );
+      //======================HOT RESTART BUG BYPASS============================
+
       if (onSignInSuccessful != null && userCred != null)
         onSignInSuccessful(userCred.user);
       return userCred.user;
@@ -196,8 +229,15 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
               onPressed: () async {
                 if (closeVerificationPopupAfterSubmit) Navigator.pop(context);
                 bool isDone = await onSubmit(ctr.value.text);
-                if (!closeVerificationPopupAfterSubmit) {
-                  if (isDone) Navigator.pop(context);
+                if (isDone) {
+                  //======================HOT RESTART BUG BYPASS===============
+                  await HotRestartBypassMechanism.saveLoginState(true);
+                  await HotRestartBypassMechanism.saveUserInformation(
+                    userCred.user,
+                  );
+                  //======================HOT RESTART BUG BYPASS===============
+                  if (!closeVerificationPopupAfterSubmit)
+                    Navigator.pop(context);
                 }
               },
               child: Text("Verify"),
@@ -215,7 +255,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
         gravity: Toast.BOTTOM,
       );
 
-    if (kIsWeb) {
+    if (Foundation.kIsWeb) {
       //The Web Flow
       try {
         ConfirmationResult confirmationResult =
@@ -242,6 +282,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
                     }
                   }
                 }
+
                 //Successful SignIn Callback
                 if (onSignInSuccessful != null && userCred != null) {
                   onSignInSuccessful(userCred.user);
@@ -353,6 +394,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
         log("AuthenticationError(Phone): $e");
       }
     }
+
     return userCred?.user;
   }
   //============================</Phone Authentication>=========================
@@ -361,6 +403,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     await FirebaseAuth.instance.signOut();
     if (onLogout != null) onLogout();
     isWaitingForSignInCompletion = false; //To Update ChangeNotifier
+    await HotRestartBypassMechanism.saveLoginState(false);
     print("Logged Out");
   }
 }
@@ -520,6 +563,7 @@ class AuthController {
   }) async {
     final provider =
         Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
+
     await provider.signInWithPhoneNumber(
       context: context,
       phoneNumber: phoneNumber,
@@ -562,12 +606,23 @@ class AuthController {
   ///   },
   /// );
   /// ```
-  static getCurrentUser(BuildContext context, {Function(User) customMapping}) {
+  static getCurrentUser(BuildContext context,
+      {Function(User) customMapping}) async {
     final provider =
         Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
-    if (customMapping != null)
-      return customMapping(provider.authInstance.currentUser);
-    return provider.authInstance.currentUser;
+    User cUser = provider.authInstance.currentUser;
+    if (cUser == null) {
+      //HotRestartBug Correction
+      if (Foundation.kDebugMode && Foundation.kIsWeb) {
+        print(
+          "Returning HotRestartBypassMechanism:SavedUser as User was null. (DartWebSDKBug)",
+        );
+        return await HotRestartBypassMechanism.getUserInformation();
+      }
+      return null;
+    }
+    if (customMapping != null) return customMapping(cUser);
+    return cUser;
   }
 }
 
@@ -577,6 +632,7 @@ class AuthenticationManager extends StatelessWidget {
   final Widget customWaitingScreen;
   final Color defaultWaitingScreenLoaderColor;
   final Color defaultWaitingScreenBackgroundColor;
+  final bool disableHotRestartBypassMechanismNotifications;
 
   ///An Authentication Gateway for your application
   ///
@@ -596,6 +652,11 @@ class AuthenticationManager extends StatelessWidget {
   ///
   ///[defaultWaitingScreenBackgroundColor] if you use the default waiting screen, this arguement changes the
   ///background color
+  ///
+  ///[disableHotRestartBypassMechanismNotifications] disables notifications about app using the HotRestartBypassMechanism.
+  ///Since v0.0.5 fireauth implements a HotRestartBugBypassMechanism that basically allows this
+  ///AuthenticationManager to work properly with Hot Restart on Flutter Web
+  ///This bug arises from the DartWebSDK and was not fixed and hence I had to come up with a custom fix.
   const AuthenticationManager({
     Key key,
     @required this.loginFragment,
@@ -603,6 +664,7 @@ class AuthenticationManager extends StatelessWidget {
     this.customWaitingScreen,
     this.defaultWaitingScreenLoaderColor = Colors.white,
     this.defaultWaitingScreenBackgroundColor = Colors.black,
+    this.disableHotRestartBypassMechanismNotifications = false,
   }) : super(key: key);
 
   @override
@@ -623,7 +685,7 @@ class AuthenticationManager extends StatelessWidget {
       ),
     );
     return StreamBuilder(
-      stream: provider.authInstance.idTokenChanges(),
+      stream: provider.authInstance.authStateChanges(),
       builder: (context, snapshot) {
         if (provider.isWaitingForSignInCompletion) {
           return customWaitingScreen ?? defaultWaitingScreen;
@@ -631,7 +693,29 @@ class AuthenticationManager extends StatelessWidget {
           if (snapshot.hasData) {
             return destinationFragment;
           } else {
-            return loginFragment;
+            //Only in Debug Mode & in Web
+            if (Foundation.kDebugMode && Foundation.kIsWeb) {
+              if (!disableHotRestartBypassMechanismNotifications)
+                print("Using HotRestartBypassMechanism (debugOnly)");
+              //---------------------HOT RESTART BYPASS--------------------------
+              return FutureBuilder<bool>(
+                future: HotRestartBypassMechanism.getLoginStatus(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data) {
+                      return destinationFragment;
+                    } else {
+                      return loginFragment;
+                    }
+                  } else {
+                    return loginFragment;
+                  }
+                },
+              );
+              //-----------------------------------------------------------------
+            } else {
+              return loginFragment;
+            }
           }
         }
       },
