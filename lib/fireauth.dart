@@ -18,6 +18,8 @@ initializeFirebase() async {
   if (!Foundation.kIsWeb) {
     await Firebase.initializeApp();
   }
+  if (Foundation.kDebugMode && Foundation.kIsWeb)
+    print("Using HotRestartBypassMechanism (debugOnly)");
 }
 
 class AuthErrors {
@@ -606,21 +608,22 @@ class AuthController {
   ///   },
   /// );
   /// ```
-  static getCurrentUser(BuildContext context,
-      {Function(User) customMapping}) async {
+  static User getCurrentUser(BuildContext context,
+      {Function(User) customMapping}) {
     final provider =
         Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
     User cUser = provider.authInstance.currentUser;
-    if (cUser == null) {
-      //HotRestartBug Correction
-      if (Foundation.kDebugMode && Foundation.kIsWeb) {
-        print(
-          "Returning HotRestartBypassMechanism:SavedUser as User was null. (DartWebSDKBug)",
-        );
-        return await HotRestartBypassMechanism.getUserInformation();
-      }
-      return null;
-    }
+    // Enable this, if currentUser is null during testing even though user is logged in,
+    // if (cUser == null) {
+    //HotRestartBug Correction
+    //   if (Foundation.kDebugMode && Foundation.kIsWeb) {
+    //     print(
+    //       "Returning HotRestartBypassMechanism:SavedUser as User was null. (DartWebSDKBug)",
+    //     );
+    //     return await HotRestartBypassMechanism.getUserInformation();
+    //   }
+    //   return null;
+    // }
     if (customMapping != null) return customMapping(cUser);
     return cUser;
   }
@@ -632,7 +635,6 @@ class AuthenticationManager extends StatelessWidget {
   final Widget customWaitingScreen;
   final Color defaultWaitingScreenLoaderColor;
   final Color defaultWaitingScreenBackgroundColor;
-  final bool disableHotRestartBypassMechanismNotifications;
 
   ///An Authentication Gateway for your application
   ///
@@ -652,11 +654,6 @@ class AuthenticationManager extends StatelessWidget {
   ///
   ///[defaultWaitingScreenBackgroundColor] if you use the default waiting screen, this arguement changes the
   ///background color
-  ///
-  ///[disableHotRestartBypassMechanismNotifications] disables notifications about app using the HotRestartBypassMechanism.
-  ///Since v0.0.5 fireauth implements a HotRestartBugBypassMechanism that basically allows this
-  ///AuthenticationManager to work properly with Hot Restart on Flutter Web
-  ///This bug arises from the DartWebSDK and was not fixed and hence I had to come up with a custom fix.
   const AuthenticationManager({
     Key key,
     @required this.loginFragment,
@@ -664,7 +661,6 @@ class AuthenticationManager extends StatelessWidget {
     this.customWaitingScreen,
     this.defaultWaitingScreenLoaderColor = Colors.white,
     this.defaultWaitingScreenBackgroundColor = Colors.black,
-    this.disableHotRestartBypassMechanismNotifications = false,
   }) : super(key: key);
 
   @override
@@ -695,8 +691,6 @@ class AuthenticationManager extends StatelessWidget {
           } else {
             //Only in Debug Mode & in Web
             if (Foundation.kDebugMode && Foundation.kIsWeb) {
-              if (!disableHotRestartBypassMechanismNotifications)
-                print("Using HotRestartBypassMechanism (debugOnly)");
               //---------------------HOT RESTART BYPASS--------------------------
               return FutureBuilder<bool>(
                 future: HotRestartBypassMechanism.getLoginStatus(),

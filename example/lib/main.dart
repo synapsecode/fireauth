@@ -353,7 +353,7 @@ class HomePage extends StatelessWidget {
             icon: Icon(Icons.person),
             onPressed: () async {
               print(
-                await AuthController.getCurrentUser(
+                AuthController.getCurrentUser(
                   context,
                   //Use the customMapping arguement to create your own User Representation from Firebase User
                   // customMapping: (user) => {

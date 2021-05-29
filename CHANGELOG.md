@@ -1,10 +1,12 @@
 ## 0.0.5
 
-- **(Stable Version)**
-- **FIX**: Contains a Hot Restart Bypass for the AuthManager for the Web Platform only - This was to bypass the DartWebSDK bug where Hot Restart doesn't work as expected with StreamBuilder and FirebaseAuth
+- **(Major Stable Version)**
+- **FIX**: Implemented HotRestartBypassMechanism to solve the DartWebSDKBug [#45874](https://github.com/dart-lang/sdk/issues/45874) which basically solves the issue of AuthenticationManager not working on Flutter Web Hot Restart.
+- **DOCS**: Updated Documentation
+- **DEPENDENCY**: Updated google_sign_in to ^5.0.4
 
 - **(v0.0.5-legacy)**: Contains the older versions of the firebase plugins (^0.7.0 for core and ^0.20.1 for auth)
-- **(v0.0.5-frozen)**: Contains version 1.1.0 for auth and 1.0.3 for core
+- **(v0.0.5-frozen)**: Contains specific version 1.1.0 for auth and 1.0.3 for core
 - **(v0.0.5-dev)**: A Pre-Release Test of the HotRestartByPassMechanism for the DartWebSDKBug
 
 ## 0.0.4
