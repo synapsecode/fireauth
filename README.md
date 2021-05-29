@@ -1,3 +1,6 @@
+<img src="https://i.ibb.co/Xz42VyG/ddf.png" align="right">
+
+
 # Fireauth
 
 FireAuth is a Flutter Package that aims to simplify Flutter Firebase Authentication and streamline app development. It provides a intuitive way to access Parts of the Firebase Authentication Suite and reduces the amount of time you have to spend on it.
@@ -8,7 +11,8 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.0.2
+  fireauth: ^0.0.5
+  #fireauth: 0.0.5-legacy if you rely on the older firebase dependencies
 ```
 
 Then run this command:
@@ -21,55 +25,27 @@ Then add this import:
 import 'package:fireauth/fireauth.dart';
 ```
 
+## Project Firebase Setup
+Setting up Firebase correctly can sometimes be a tedious process. Hence, I have come up with a python script that will do most of the hardwork for you! It also contains well documented instructions so that the entire process is very smooth!
+Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup) to Properly add Firebase to your Flutter App
+
 ## Platform Support
-* Android
-* iOS (Not Tested & Probably has bugs)
-* Web
+<span>
+<img src="https://img.icons8.com/color/48/000000/android-os.png"/>
+<img src="https://img.icons8.com/fluent/48/000000/chrome.png"/>
+<img src="https://img.icons8.com/color/48/000000/ios-logo.png"/>
+</span>
 
 ## Currently Supported Authentication Methods:
-* Google
-* Anonymous
-* Email and Password
-* Phone
+<span>
+<img src="https://img.icons8.com/color/48/000000/google-logo.png"/>
+<img src="https://img.icons8.com/color/48/000000/anonymous-mask.png"/>
+<img src="https://img.icons8.com/color/48/000000/new-post.png"/>
+<img src="https://img.icons8.com/color/48/000000/phone.png"/>
+</span>
 
-## Prerequisites:
-* Create a new flutter project
-* Create a new Firebase Project and Add it to your project or use [My FireSetup Python Utility](https://github.com/synapsecode/FireSetup) to do it easily.
-* Add your SHA-1 & SHA-256 Key to Firebase in your App Settings on the Firebase Console. Here is how you do it:
+---
 
-    Go to your /android folder in the flutter project, open terminal and type this:
-    
-    ```batch
-    gradlew signingReport
-    ```
-    
-    now, copy the SHA1 and SHA-256 Keys, store it for later use and add it to your Firebase Project
-    **(This is required for GoogleSignIn and PhoneSignIn)**
-* Enable all the Authentication Methods needed in the Firebase Authentication Console (example: Phone, Google, etc)
-
-## Optional Prerequisites (Not Needed if you used [FireSetup](https://github.com/synapsecode/FireSetup)):
-* **(For Google SignIn on Flutter Web)**
-    * Go to [Google Cloud Platform Console](https://console.cloud.google.com/) and Open your Google Account Associated with Firebase
-    * Open your GCP project with the same name as your firebase project and search for Credentials
-    * copy the OAuth2 ClientID for Web
-    * Go to your flutter project > web > index.html and paste this in the head section:
-    
-        ```html
-        <meta name="google-signin-client_id" content="<REPLACE WITH CLIENTID>">
-        ```
-* **(To Remove ReCaptcha Verification for Phone Authentication)**
-     * **(Android)** Go to [Google Cloud Platform Console](https://console.cloud.google.com/) open the correct GCP Project, search for Android Device Verification API and enable it. **(NOTE: This needs to be done even if you have used FireSetup)**
-     
-    * **(Web)** Go the flutter project > web > index.html and add this in the head section:
-    
-      ```html
-      <style>
-        .grecaptcha-badge { visibility: hidden; }
-      </style>
-      ```
-
-   
-    
 # Usage
 
 ## Step 1: Initializing Firebase (main.dart)
@@ -81,7 +57,7 @@ void main() async {
 }
 ```
      
-## Step 2: Wrapping your Material App with GlobalFirebaseAuthenticationProvider
+## Step 2: Wrap your Material App with GlobalFirebaseAuthenticationProvider
 ```dart
 //Allows the Authentication Methods to be accessible from anywhere in the widget tree
 return GlobalFirebaseAuthenticationProvider(
@@ -91,7 +67,7 @@ return GlobalFirebaseAuthenticationProvider(
 );
 ```
 
-## Step 3: Using the AuthenticationManager
+## Step 3: Use the AuthenticationManager
 ```dart
 //This basically acts like a Gateway, If youre logged in, it shows the destinationFragment
 //else it shows the loginFragment (It Remembers the Authentication State too!)
@@ -121,7 +97,7 @@ AuthController.signInWithGoogle(
 
 ### Anonymous SignIn
 ```dart
-  AuthController.signInAnonymously(context),
+AuthController.signInAnonymously(context),
 ```
 
 ### Phone SignIn
@@ -200,3 +176,11 @@ If you just want a ready to use button that enables Anonymous SignIn, This is th
 //has some additional arguements that you can see from your IDE, as it is very well documented
 AnonymousSignInButton()
 ```
+
+# Future Plans
+
+- Test FireAuth on iOS
+- Implement Twitter, Github, Microsoft, Apple, Facebook and other such AuthenticationMethods
+- Move FireAuth to sound null safety
+
+# [FireAuth ChangeLogs](https://pub.dev/packages/fireauth/changelog)
