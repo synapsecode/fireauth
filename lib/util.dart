@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' as Foundation;
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// This class iis basically a HotRestartBypassMechanism. the firebaseSDK went through a bunch
@@ -57,5 +58,33 @@ class HotRestartBypassMechanism {
       print("getUserInformation returned null");
       return null;
     }
+  }
+}
+
+class HotRestartByPassBuilder extends StatelessWidget {
+  final Widget destinationFragment;
+  final Widget loginFragment;
+  const HotRestartByPassBuilder({
+    Key key,
+    this.destinationFragment,
+    this.loginFragment,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: HotRestartBypassMechanism.getLoginStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data) {
+            return destinationFragment;
+          } else {
+            return loginFragment;
+          }
+        } else {
+          return loginFragment;
+        }
+      },
+    );
   }
 }

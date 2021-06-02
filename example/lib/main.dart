@@ -16,8 +16,8 @@ class FireAuthExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //Always add this above the MaterialApp, it Exposes a Provider Internally
     //That can be used to access the AuthInformation from Anywhere
-    return GlobalFirebaseAuthenticationProvider(
-      child: MaterialApp(
+    return FireAuth(
+      materialApp: MaterialApp(
         home: AppOrigin(),
       ),
     );
@@ -31,7 +31,7 @@ class AppOrigin extends StatelessWidget {
   Widget build(BuildContext context) {
     //This basically acts like a Gateway, If youre logged in, it shows destination
     //If youre not logged in, it shows login (Remembers the Authentication State too!)
-    return AuthenticationManager(
+    return AuthManager(
       loginFragment: LoginPage(),
       destinationFragment: HomePage(),
       //Other Arguements are for Setting up WaitingScreen during login and are optional
@@ -73,6 +73,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
+              Text(
+                "Social Login",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                ),
+              ),
+              SizedBox(height: 20),
+              //FireAuth Provided TwitterSignInButton
+              TwitterSignInButton(
+                onError: (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("TwitterOAuth Error Occured"),
+                      content: Text(e),
+                    ),
+                  );
+                },
+              ),
+              //Incase you want to make a new Button for TwitterSignInButton, you can use this method:
+              /*
+              AuthController.signInWithTwiter(
+                context,
+                signInWithRedirect: false,
+                enableWaitingScreen: false,
+                onError: (String e) {
+                  print(e);
+                },
+              ),
+              */
+              SizedBox(height: 8),
               //FireAuth Provided GoogleSignInButton
               GoogleSignInButton(
                 //If you want a waiting screen when GoogleSignIn is ongoing
@@ -106,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               */
-              SizedBox(height: 20),
+              SizedBox(height: 8),
               //FireAuth Provided AnonymousSignInButton you can customize the colors if needed
               AnonymousSignInButton(
                 enableWaitingSceeen: false,
@@ -124,6 +156,14 @@ class _LoginPageState extends State<LoginPage> {
                   enableWaitingScreen: false,
                 ),
               */
+              SizedBox(height: 30),
+              Text(
+                "Phone Authentication",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                ),
+              ),
               SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.all(10),
@@ -195,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               Container(
                 color: Colors.white,
@@ -250,7 +290,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               Container(
                 color: Colors.white,

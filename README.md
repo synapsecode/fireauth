@@ -11,8 +11,10 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.0.5
-  #fireauth: 0.0.5-legacy if you rely on the older firebase dependencies
+  fireauth: ^0.1.0-dev
+  
+# If you want the latest Major Stable Version use Version 0.0.5
+# If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
 ```
 
 Then run this command:
@@ -33,16 +35,16 @@ Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup) to Properly
 <span>
 <img src="https://img.icons8.com/color/48/000000/android-os.png"/>
 <img src="https://img.icons8.com/fluent/48/000000/chrome.png"/>
-<img src="https://img.icons8.com/color/48/000000/ios-logo.png"/>
 </span>
 
 ## Currently Supported Authentication Methods:
-<span>
-<img src="https://img.icons8.com/color/48/000000/google-logo.png"/>
-<img src="https://img.icons8.com/color/48/000000/anonymous-mask.png"/>
-<img src="https://img.icons8.com/color/48/000000/new-post.png"/>
-<img src="https://img.icons8.com/color/48/000000/phone.png"/>
-</span>
+| Auth Methods  | Android | iOS (Untested) | Web |
+|---------------|---------|-----|-----|
+| Anonymous     |   ✔️    |  ❓   |  ✔️   |
+| Email         |   ✔️      |  ❓   |  ✔️   |
+| Phone         |   ✔️      |   ❓  |  ✔️   |
+| Google        |   ✔️      |  ❓   |  ✔️   |
+| Twitter OAuth |   ✔️      |   ❓  | ✔️    |
 
 ---
 
@@ -57,22 +59,22 @@ void main() async {
 }
 ```
      
-## Step 2: Wrap your Material App with GlobalFirebaseAuthenticationProvider
+## Step 2: Wrap your Material App with FireAuth
 ```dart
 //Allows the Authentication Methods to be accessible from anywhere in the widget tree
-return GlobalFirebaseAuthenticationProvider(
- child: MaterialApp(
-   home: AppOrigin(),
- ),
+return FireAuth(
+   materialApp: MaterialApp(
+     home: MyAppHome(),
+   ),
 );
 ```
 
-## Step 3: Use the AuthenticationManager
+## Step 3: Use the AuthManager
 ```dart
 //This basically acts like a Gateway, If youre logged in, it shows the destinationFragment
 //else it shows the loginFragment (It Remembers the Authentication State too!)
 
-return AuthenticationManager(
+return AuthManager(
   loginFragment: LoginPage(),
   destinationFragment: HomePage(),
   
@@ -89,15 +91,18 @@ For more information on these methods, take a look at them using the IDE, they a
 ```dart
 AuthController.signInWithGoogle(
   context,
-  onError: (String e) {
-    print(e);
-  },
-),
+  onError: (String e) {},
+  onSignInSuccessful: (User u) {},
+);
 ```
 
 ### Anonymous SignIn
 ```dart
-AuthController.signInAnonymously(context),
+AuthController.signInAnonymously(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
 ```
 
 ### Phone SignIn
@@ -105,14 +110,11 @@ AuthController.signInAnonymously(context),
 AuthController.signInWithPhoneNumber(
     context,
     phoneNumber: phoneNumberController.value.text,
-    onError: (e) {
-      ...
-    },
-    onInvalidVerificationCode: () {
-      ...
-    },
+    onError: (e) {},
+    onInvalidVerificationCode: () {},
+    onSignInSuccessful: (User u) {},
   );
-},
+};
 ```
 
 ### Register & Login With Email & Password
@@ -121,9 +123,8 @@ AuthController.registerWithEmailAndPassword(
   context,
   email: "example@email.com",
   password: "abc123",
-  onError: (String e) {
-    ...
-  },
+  onError: (String e) {},
+  onRegisterSuccessful: (User u) {},
 );
 ```
 
@@ -133,12 +134,18 @@ AuthController.signInWithEmailAndPassword(
   context,
   email: "example@email.com",
   password: "abc123",
-  onError: (String e) {
-    ...
-  },
-  onIncorrectCredentials: () {
-    ...
-  },
+  onError: (String e) {},
+  onIncorrectCredentials: () {},
+  onSignInSuccessful: (User u) {},
+);
+```
+
+### Twitter OAuth SignIn
+```dart
+AuthController.signInWithTwiter(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
 );
 ```
 
@@ -159,28 +166,23 @@ AuthController.getCurrentUser(
 );
 ```
 
-## Other Widgets
+## Social SignIn Buttons
 
-### GoogleSignIn Button
-If you just want a ready to use button that enables Google SignIn, This is the Widget you're looking for!
+If you just want a ready to use button that enables a particular Social SignIn, This is these are the Widgets that you're looking for!
 
 ```dart
-//has some additional arguements that you can see from your IDE, as it is very well documented
 GoogleSignInButton()
-```
-
-### Anonymous SignIn Button
-If you just want a ready to use button that enables Anonymous SignIn, This is the Widget you're looking for!
-
-```dart
-//has some additional arguements that you can see from your IDE, as it is very well documented
 AnonymousSignInButton()
+TwitterSignInButton()
 ```
 
 # Future Plans
 
 - Test FireAuth on iOS
-- Implement Twitter, Github, Microsoft, Apple, Facebook and other such AuthenticationMethods
+- Implement other OAuth Login Methods along With Facebook Login
 - Move FireAuth to sound null safety
+- Declare Production Ready Status
 
 # [FireAuth ChangeLogs](https://pub.dev/packages/fireauth/changelog)
+
+# [Live Example (FlutterWeb)](https://fauthweb-example.surge.sh/#/)

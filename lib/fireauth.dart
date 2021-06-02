@@ -2,12 +2,14 @@ library fireauth;
 
 import 'package:fireauth/util.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:toast/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+
+import 'oauth.dart';
 
 /// Initializes Firebase for Mobile Devices
 ///
@@ -23,12 +25,19 @@ initializeFirebase() async {
 }
 
 class AuthErrors {
-  static final String wrongPassword = '[firebase_auth/wrong-password]';
-  static final String invalidOTP = '[firebase_auth/invalid-verification-code]';
+  //Mail&PasswordError
+  static const String wrongPassword = '[firebase_auth/wrong-password]';
+  //PhoneError
+  static const String invalidOTP = '[firebase_auth/invalid-verification-code]';
+  //TwitterOAuthErrors
+  static const String operationCancelled =
+      'FirebaseAuthError: The web operation was canceled by the user.';
+  static const String callbackNotApproved =
+      'Callback URL not approved for this client application';
 }
 
 /// This ChangeNotifier exposes the entire Authentication System
-class FirebaseAuthenticationProvider extends ChangeNotifier {
+class FireAuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isWaitingForSignInCompletion = false;
 
@@ -41,7 +50,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
   }
 
   //=============================<Google SignIn>=========================
-  Future signInWithGoogle({
+  Future<User> signInWithGoogle({
     bool allowSignInWithRedirect = false,
     bool enableWaitingScreen = true,
     Function(String) onError,
@@ -100,9 +109,10 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
   //============================</Google SignIn>=========================
 
   //=============================<Anonymous SignIN>=========================
-  Future signInAnonymously({
+  Future<User> signInAnonymously({
     bool enableWaitingScreen,
     Function(User) onSignInSuccessful,
+    Function(String) onError,
   }) async {
     try {
       if (enableWaitingScreen) isWaitingForSignInCompletion = true;
@@ -122,13 +132,14 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     } catch (e) {
       print("AuthenticationError(Anonymous): $e");
       if (enableWaitingScreen) isWaitingForSignInCompletion = false;
+      if (onError != null) onError(e);
       return null;
     }
   }
   //============================</Anonymous SignIN>=========================
 
   //=============================<EMAIL & PASSWORD SIGNIN>=========================
-  Future registerWithEmailAndPassword({
+  Future<User> registerWithEmailAndPassword({
     String email,
     String password,
     Function(String) onError,
@@ -158,7 +169,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  Future signInWithEmailAndPassword({
+  Future<User> signInWithEmailAndPassword({
     String email,
     String password,
     Function onIncorrectCredentials,
@@ -195,7 +206,7 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
   //============================</EMAIL & PASSWORD SIGNIN>=========================
 
   //============================<Phone Authentication>=========================-
-  Future signInWithPhoneNumber({
+  Future<User> signInWithPhoneNumber({
     BuildContext context,
     String phoneNumber,
     Function onInvalidVerificationCode,
@@ -250,11 +261,13 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
     }
 
     if (showInitiationToast)
-      Toast.show(
-        "Initating SignIn...Please Wait",
-        context,
-        duration: Toast.LENGTH_LONG,
-        gravity: Toast.BOTTOM,
+      Fluttertoast.showToast(
+        msg: "Initiating SignIn...Please Wait",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
 
     if (Foundation.kIsWeb) {
@@ -401,6 +414,31 @@ class FirebaseAuthenticationProvider extends ChangeNotifier {
   }
   //============================</Phone Authentication>=========================
 
+  //-----------------------------------OAUTH------------------------------------
+
+  //Twitter
+  Future<User> signInWithTwitter({
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+    bool enableWaitingScreen,
+  }) async {
+    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
+    User user = await OAuthEngine.twitterOAuthSignIn(
+      onError: onError,
+    );
+    isWaitingForSignInCompletion = false;
+    if (user != null) {
+      if (onSignInSuccessful != null) onSignInSuccessful(user);
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      await HotRestartBypassMechanism.saveUserInformation(user);
+      //======================HOT RESTART BUG BYPASS============================
+    }
+    return user;
+  }
+
+  //-----------------------------------OAUTH------------------------------------
+
   logout({Function onLogout}) async {
     await FirebaseAuth.instance.signOut();
     if (onLogout != null) onLogout();
@@ -433,15 +471,17 @@ class AuthController {
   ///[onError] a Callback for any Error that may occur
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static signInWithGoogle(
+  static Future<User> signInWithGoogle(
     BuildContext context, {
     bool signInWithRedirect,
     bool enableWaitingScreen,
     Function(String) onError,
     Function onSignInSuccessful,
-  }) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
-        .signInWithGoogle(
+  }) async {
+    return await Provider.of<FireAuthProvider>(
+      context,
+      listen: false,
+    ).signInWithGoogle(
       allowSignInWithRedirect: signInWithRedirect ?? false,
       enableWaitingScreen: enableWaitingScreen ?? false,
       onError: onError,
@@ -459,12 +499,19 @@ class AuthController {
   ///on how you have setup your AuthManager.
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static signInAnonymously(BuildContext context,
-      {bool enableWaitingScreen, Function(User) onSignInSuccessful}) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
-        .signInAnonymously(
+  static Future<User> signInAnonymously(
+    BuildContext context, {
+    bool enableWaitingScreen,
+    Function(User) onSignInSuccessful,
+    Function(String) onError,
+  }) async {
+    return await Provider.of<FireAuthProvider>(
+      context,
+      listen: false,
+    ).signInAnonymously(
       enableWaitingScreen: enableWaitingScreen ?? true,
       onSignInSuccessful: onSignInSuccessful,
+      onError: onError,
     );
   }
 
@@ -483,14 +530,14 @@ class AuthController {
   ///[onError] is a callback to handle any errors during the process
   ///
   ///[onRegisterSuccessful] a Callback to perform any action after a successful SignIn
-  static registerWithEmailAndPassword(
+  static Future<User> registerWithEmailAndPassword(
     BuildContext context, {
     @required String email,
     @required String password,
     Function(String) onError,
     Function(User) onRegisterSuccessful,
-  }) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
+  }) async {
+    return await Provider.of<FireAuthProvider>(context, listen: false)
         .registerWithEmailAndPassword(
       email: email,
       password: password,
@@ -514,15 +561,15 @@ class AuthController {
   ///[onIncorrectCredentials] is a callback to handle incorrect credentials
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static signInWithEmailAndPassword(
+  static Future<User> signInWithEmailAndPassword(
     BuildContext context, {
     @required String email,
     @required String password,
     Function(String) onError,
     Function onIncorrectCredentials,
     Function(User) onSignInSuccessful,
-  }) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false)
+  }) async {
+    return await Provider.of<FireAuthProvider>(context, listen: false)
         .signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -555,7 +602,7 @@ class AuthController {
   ///
   ///[closeVerificationPopupAfterSubmit] a boolean which when true, closes the OTP Verification Dialog after an attempt and if
   ///false leaves it open, basically if the User Wants to Retry
-  static signInWithPhoneNumber(
+  static Future<User> signInWithPhoneNumber(
     BuildContext context, {
     String phoneNumber,
     Function(String) onError,
@@ -563,10 +610,9 @@ class AuthController {
     Function(User) onSignInSuccessful,
     bool closeVerificationPopupAfterSubmit = false,
   }) async {
-    final provider =
-        Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
 
-    await provider.signInWithPhoneNumber(
+    return await provider.signInWithPhoneNumber(
       context: context,
       phoneNumber: phoneNumber,
       onError: onError,
@@ -576,13 +622,49 @@ class AuthController {
     );
   }
 
+  ///Initiates a Twitter OAuth SignUp Flow based on the OAuthEngine Implementation
+  ///
+  ///[context] is necessary
+  ///
+  ///[onError] is a callback that is invoked when an error is encountered
+  ///
+  ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
+  ///It provides a User which you can use to perform other actions.
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///Setup Process
+  ///
+  ///Enable Twitter Authentication in the Firebase Authentication Console
+  ///
+  ///Open the Twitter Developer Console, Create a new app, add its API Key & Secret
+  ///to the respective fields in the TwitterAuthDialog in the FirebaseConsole.
+  ///
+  ///Then Copy the callbackURL from the console, Enable 3-Legged-OAuth in the Twitter
+  ///Developer console and add the callbackURL there and the setup is done!
+  static Future<User> signInWithTwiter(
+    BuildContext context, {
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+    bool enableWaitingScreen,
+  }) async {
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
+    return await provider.signInWithTwitter(
+      onError: onError,
+      onSignInSuccessful: onSignInSuccessful,
+      enableWaitingScreen: enableWaitingScreen ?? true,
+    );
+  }
+
   /// Initiates a logout and the authManager redirects to the loginFragment
   ///
   /// [context] is necessary
   ///
   /// [onLogout] is a callback function that is called immediately after a logout
   static logout(BuildContext context, {Function onLogout}) {
-    Provider.of<FirebaseAuthenticationProvider>(context, listen: false).logout(
+    Provider.of<FireAuthProvider>(context, listen: false).logout(
       onLogout: onLogout,
     );
   }
@@ -610,8 +692,7 @@ class AuthController {
   /// ```
   static User getCurrentUser(BuildContext context,
       {Function(User) customMapping}) {
-    final provider =
-        Provider.of<FirebaseAuthenticationProvider>(context, listen: false);
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
     User cUser = provider.authInstance.currentUser;
     // Enable this, if currentUser is null during testing even though user is logged in,
     // if (cUser == null) {
@@ -629,7 +710,7 @@ class AuthController {
   }
 }
 
-class AuthenticationManager extends StatelessWidget {
+class AuthManager extends StatelessWidget {
   final Widget loginFragment;
   final Widget destinationFragment;
   final Widget customWaitingScreen;
@@ -654,7 +735,7 @@ class AuthenticationManager extends StatelessWidget {
   ///
   ///[defaultWaitingScreenBackgroundColor] if you use the default waiting screen, this arguement changes the
   ///background color
-  const AuthenticationManager({
+  const AuthManager({
     Key key,
     @required this.loginFragment,
     @required this.destinationFragment,
@@ -665,7 +746,7 @@ class AuthenticationManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FirebaseAuthenticationProvider>(context);
+    final provider = Provider.of<FireAuthProvider>(context);
     final Widget defaultWaitingScreen = Container(
       color: defaultWaitingScreenBackgroundColor,
       child: Stack(
@@ -692,19 +773,9 @@ class AuthenticationManager extends StatelessWidget {
             //Only in Debug Mode & in Web
             if (Foundation.kDebugMode && Foundation.kIsWeb) {
               //---------------------HOT RESTART BYPASS--------------------------
-              return FutureBuilder<bool>(
-                future: HotRestartBypassMechanism.getLoginStatus(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data) {
-                      return destinationFragment;
-                    } else {
-                      return loginFragment;
-                    }
-                  } else {
-                    return loginFragment;
-                  }
-                },
+              return HotRestartByPassBuilder(
+                destinationFragment: destinationFragment,
+                loginFragment: loginFragment,
               );
               //-----------------------------------------------------------------
             } else {
@@ -717,35 +788,35 @@ class AuthenticationManager extends StatelessWidget {
   }
 }
 
-class GlobalFirebaseAuthenticationProvider extends StatelessWidget {
-  final Widget child;
+class FireAuth extends StatelessWidget {
+  final MaterialApp materialApp;
 
-  ///Exposes the FirebaseAuthenticationProvider to the whole widget tree
+  ///Exposes the FireAuthProvider to the whole widget tree
   ///
   ///You MUST put this above the MaterialApp widget to ensure the whole widget tree
   ///has access to the AuthenticationProvider.
   ///
-  ///This is a compulsary widget as the AuthController and AuthenticationManager depends on it.
+  ///This is a compulsary widget as the AuthController and AuthManager depends on it.
   ///
-  ///Although you won't need it, You can access the FirebaseAuthenticationProvider like this:
+  ///Although you won't need it, You can access the FireAuthProvider like this:
   ///
   ///```dart
-  ///final provider = Provider.of<FirebaseAuthenticationProvider>(context, listen:false);
+  ///final provider = Provider.of<FireAuthProvider>(context, listen:false);
   ///```
   ///
   ///[child] is your MaterialApp
-  const GlobalFirebaseAuthenticationProvider({Key key, this.child})
-      : super(key: key);
+  const FireAuth({Key key, this.materialApp}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => FirebaseAuthenticationProvider(),
-      child: child,
+      create: (context) => FireAuthProvider(),
+      child: materialApp,
     );
   }
 }
 
+// ============================SOCIAL BUTTONS=================================
 class GenericSignInButton extends StatelessWidget {
   final String name;
   final String logoURL;
@@ -870,25 +941,32 @@ class GoogleSignInButton extends StatelessWidget {
   }
 }
 
-/// A Ready-To-Use Anonymous SignIn Button
-///
-///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-///on how you have setup your AuthManager.
-///
-///[foregroundColor] is the Text Color (default black)
-///
-///[backgroundColor] is the Background Color (default White)
 class AnonymousSignInButton extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
   final bool enableWaitingSceeen;
   final Function(User) onSignInSuccessful;
+  final Function(String) onError;
+
+  /// A Ready-To-Use Anonymous SignIn Button
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[foregroundColor] is the Text Color (default black)
+  ///
+  ///[backgroundColor] is the Background Color (default White)
+
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  ///
+  ///[onError] A Callback which is invoked during an error
   const AnonymousSignInButton({
     Key key,
     this.foregroundColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.enableWaitingSceeen,
+    this.onError,
     this.onSignInSuccessful,
   }) : super(key: key);
 
@@ -900,6 +978,7 @@ class AnonymousSignInButton extends StatelessWidget {
         context,
         enableWaitingScreen: enableWaitingSceeen ?? true,
         onSignInSuccessful: onSignInSuccessful,
+        onError: onError,
       ),
       logoURL: 'https://i.ibb.co/jRSsZtN/36006-5-anonymous.png',
       backgroundColor: backgroundColor,
@@ -908,3 +987,50 @@ class AnonymousSignInButton extends StatelessWidget {
     );
   }
 }
+
+class TwitterSignInButton extends StatelessWidget {
+  final Color foregroundColor;
+  final Color backgroundColor;
+  final bool enableWaitingSceeen;
+  final Function(User) onSignInSuccessful;
+  final Function(String) onError;
+
+  /// A Ready-To-Use Anonymous SignIn Button
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[foregroundColor] is the Text Color (default black)
+  ///
+  ///[backgroundColor] is the Background Color (default White)
+  ///
+  ///[onError] a Callback for any Error that may occur
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  const TwitterSignInButton({
+    Key key,
+    this.foregroundColor = Colors.white,
+    this.backgroundColor = Colors.white,
+    this.enableWaitingSceeen,
+    this.onSignInSuccessful,
+    this.onError,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericSignInButton(
+      name: 'Twitter',
+      initiator: (context) => AuthController.signInWithTwiter(
+        context,
+        onSignInSuccessful: onSignInSuccessful,
+        enableWaitingScreen: enableWaitingSceeen ?? false,
+        onError: onError,
+      ),
+      logoURL: 'https://img.icons8.com/android/24/ffffff/twitter.png',
+      backgroundColor: Colors.blue,
+      foregroundColor: foregroundColor,
+    );
+  }
+}
+// ============================SOCIAL BUTTONS=================================

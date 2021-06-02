@@ -1,7 +1,22 @@
+## 0.1.0
+
+- **(Stable Version)**
+- **FEAT**: Laid the Foundations of OAuthEngine
+- **FEAT**: Implemented TwitterOAuth SignIn & Its SocialButton
+- **DOCS**: Updated Documentation
+- **FIX**: Added GuavaListenableImplementation to Example build.gradle to Resolve Build Errors after implementing OAuthEngine
+- **FEAT**: Made sure all AuthMethods return a User
+- **RENAME**: GlobalFirebaseAuthenticationProvider is now FireAuth and its child arguement is now the materialApp arguement.
+- **RENAME**: AuthenticationManager is now AuthManager
+- **RENAME**: FirebaseAuthenticationProvider is now FireAuthProvider
+- **NOTE**: Use the Latest Version of FireSetup for this version.
+
+- **(v0.1.0-dev)**: A Pre-Release Test of the OAuthEngine & TwitterSignIn
+
 ## 0.0.5
 
 - **(Major Stable Version)**
-- **FIX**: Implemented HotRestartBypassMechanism to solve the DartWebSDKBug [#45874](https://github.com/dart-lang/sdk/issues/45874) which basically solves the issue of AuthenticationManager not working on Flutter Web Hot Restart.
+- **FIX**: Implemented HotRestartBypassMechanism to solve the DartWebSDKBug [#6247](https://github.com/FirebaseExtended/flutterfire/issues/6247) which basically solves the issue of AuthenticationManager not working on Flutter Web Hot Restart.
 - **DOCS**: Updated Documentation
 - **DEPENDENCY**: Updated google_sign_in to ^5.0.4
 
