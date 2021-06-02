@@ -789,7 +789,7 @@ class AuthManager extends StatelessWidget {
 }
 
 class FireAuth extends StatelessWidget {
-  final MaterialApp materialApp;
+  final Widget materialApp;
 
   ///Exposes the FireAuthProvider to the whole widget tree
   ///

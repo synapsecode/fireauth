@@ -9,9 +9,6 @@
 - **RENAME**: GlobalFirebaseAuthenticationProvider is now FireAuth and its child arguement is now the materialApp arguement.
 - **RENAME**: AuthenticationManager is now AuthManager
 - **RENAME**: FirebaseAuthenticationProvider is now FireAuthProvider
-- **NOTE**: Use the Latest Version of FireSetup for this version.
-
-- **(v0.1.0-dev)**: A Pre-Release Test of the OAuthEngine & TwitterSignIn
 
 ## 0.0.5
 
