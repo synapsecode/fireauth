@@ -69,4 +69,16 @@ class OAuthEngine {
       onError: onError,
     );
   }
+
+  ///This Function is Responsible for initiating the Github OAuthEngine
+  static Future<User> githubOAuthSignIn({
+    Function(String) onError,
+  }) async {
+    return await performOAuthLogin(
+      provider: "github.com",
+      scopes: ["email"],
+      parameters: {"locale": "en"},
+      onError: onError,
+    );
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:fireauth/social.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //Import FireAuth
@@ -96,6 +97,29 @@ class _LoginPageState extends State<LoginPage> {
               //Incase you want to make a new Button for TwitterSignInButton, you can use this method:
               /*
               AuthController.signInWithTwiter(
+                context,
+                signInWithRedirect: false,
+                enableWaitingScreen: false,
+                onError: (String e) {
+                  print(e);
+                },
+              ),
+              */
+              SizedBox(height: 8),
+              GithubSignInButton(
+                onError: (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("GithubOAuth Error Occured"),
+                      content: Text(e),
+                    ),
+                  );
+                },
+              ),
+              //Incase you want to make a new Button for GithubSignInButton, you can use this method:
+              /*
+              AuthController.signInWithGithub(
                 context,
                 signInWithRedirect: false,
                 enableWaitingScreen: false,
@@ -359,6 +383,7 @@ class _LoginPageState extends State<LoginPage> {
                 backgroundColor: Colors.red[700],
                 customString: 'Logout',
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),

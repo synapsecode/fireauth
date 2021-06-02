@@ -11,10 +11,10 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.1.0-dev
+  fireauth: ^0.2.0
   
-# If you want the latest Major Stable Version use Version 0.0.5
-# If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
+#If you want the latest Major Stable Version use Version 0.0.5
+#If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
 ```
 
 Then run this command:
@@ -28,8 +28,10 @@ import 'package:fireauth/fireauth.dart';
 ```
 
 ## Project Firebase Setup
-Setting up Firebase correctly can sometimes be a tedious process. Hence, I have come up with a python script that will do most of the hardwork for you! It also contains well documented instructions so that the entire process is very smooth!
-Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup) to Properly add Firebase to your Flutter App
+### Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup)
+
+Setting up Firebase correctly to work with all the Authentication Methods provided by FireAuth can sometimes be difficult and tedious!  Hence, I have come up with a python script that will do most of the hardwork for you! It also contains well documented instructions so that the entire process is very smooth. It's better than the official documentation! 
+> 🔴 If you do not use FireSetup there could be some issues due to incorrect manual setup.
 
 ## Platform Support
 <span>
@@ -38,13 +40,16 @@ Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup) to Properly
 </span>
 
 ## Currently Supported Authentication Methods:
-| Auth Methods  | Android | iOS (Untested) | Web |
+> 🔴 The status for iOS is currently unknown as It has not been tested yet.
+
+| Auth Methods  | Android | iOS | Web |
 |---------------|---------|-----|-----|
 | Anonymous     |   ✔️    |  ❓   |  ✔️   |
 | Email         |   ✔️      |  ❓   |  ✔️   |
 | Phone         |   ✔️      |   ❓  |  ✔️   |
 | Google        |   ✔️      |  ❓   |  ✔️   |
 | Twitter OAuth |   ✔️      |   ❓  | ✔️    |
+| Github OAuth |   ✔️      |   ❓  | ✔️    |
 
 ---
 
@@ -149,6 +154,15 @@ AuthController.signInWithTwiter(
 );
 ```
 
+### Github OAuth SignIn
+```dart
+AuthController.signInWithGithub(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
+```
+
 ### Logout
 ```dart
 AuthController.logout(context);
@@ -171,9 +185,13 @@ AuthController.getCurrentUser(
 If you just want a ready to use button that enables a particular Social SignIn, This is these are the Widgets that you're looking for!
 
 ```dart
+//To Use SocialButtons you need this import!
+import 'package:fireauth/social.dart';
+
 GoogleSignInButton()
 AnonymousSignInButton()
 TwitterSignInButton()
+GithubSignInButton()
 ```
 
 # Future Plans

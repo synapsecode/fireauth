@@ -1,3 +1,11 @@
+## 0.2.0
+
+- **(Stable Version)**
+- **FEAT**: Implemented GithubOAuth SignIn & Its SocialButton
+- **DOCS**: Fixed & Updated Documentation
+- **BREAKING**: Social Buttons are now placed in fireauth/social.dart
+- **CHORE**: Updated Example Project
+
 ## 0.1.0
 
 - **(Stable Version)**
