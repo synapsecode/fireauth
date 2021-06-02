@@ -63,7 +63,7 @@ void main() async {
 ```dart
 //Allows the Authentication Methods to be accessible from anywhere in the widget tree
 return FireAuth(
-   materialApp: MaterialApp(
+   child: MaterialApp(
      home: MyAppHome(),
    ),
 );
