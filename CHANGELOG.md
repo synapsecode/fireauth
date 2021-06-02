@@ -6,7 +6,7 @@
 - **DOCS**: Updated Documentation
 - **FIX**: Added GuavaListenableImplementation to Example build.gradle to Resolve Build Errors after implementing OAuthEngine
 - **FEAT**: Made sure all AuthMethods return a User
-- **RENAME**: GlobalFirebaseAuthenticationProvider is now FireAuth and its child arguement is now the materialApp arguement.
+- **RENAME**: GlobalFirebaseAuthenticationProvider is now FireAuth
 - **RENAME**: AuthenticationManager is now AuthManager
 - **RENAME**: FirebaseAuthenticationProvider is now FireAuthProvider
 

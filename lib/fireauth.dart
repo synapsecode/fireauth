@@ -789,7 +789,7 @@ class AuthManager extends StatelessWidget {
 }
 
 class FireAuth extends StatelessWidget {
-  final Widget materialApp;
+  final Widget child;
 
   ///Exposes the FireAuthProvider to the whole widget tree
   ///
@@ -805,13 +805,13 @@ class FireAuth extends StatelessWidget {
   ///```
   ///
   ///[child] is your MaterialApp
-  const FireAuth({Key key, this.materialApp}) : super(key: key);
+  const FireAuth({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => FireAuthProvider(),
-      child: materialApp,
+      child: child,
     );
   }
 }

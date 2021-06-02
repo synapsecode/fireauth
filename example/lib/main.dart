@@ -17,7 +17,7 @@ class FireAuthExampleApp extends StatelessWidget {
     //Always add this above the MaterialApp, it Exposes a Provider Internally
     //That can be used to access the AuthInformation from Anywhere
     return FireAuth(
-      materialApp: MaterialApp(
+      child: MaterialApp(
         home: AppOrigin(),
       ),
     );
