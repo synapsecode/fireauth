@@ -47,8 +47,8 @@ class OAuthEngine {
     try {
       usr = await FirebaseAuthOAuth().openSignInFlow(
         provider,
-        scopes,
-        parameters,
+        scopes ?? ["email"],
+        parameters ?? {"locale": "en"},
       );
     } on PlatformException catch (error) {
       handleError("${error.code}: ${error.message}");
@@ -64,8 +64,6 @@ class OAuthEngine {
   }) async {
     return await performOAuthLogin(
       provider: "twitter.com",
-      scopes: ["email"],
-      parameters: {"locale": "en"},
       onError: onError,
     );
   }
@@ -76,8 +74,16 @@ class OAuthEngine {
   }) async {
     return await performOAuthLogin(
       provider: "github.com",
-      scopes: ["email"],
-      parameters: {"locale": "en"},
+      onError: onError,
+    );
+  }
+
+  ///This Function is Responsible for initiating the Github OAuthEngine
+  static Future<User> microsoftOAuthLogin({
+    Function(String) onError,
+  }) async {
+    return await performOAuthLogin(
+      provider: "microsoft.com",
       onError: onError,
     );
   }

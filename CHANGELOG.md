@@ -1,3 +1,12 @@
+## 0.3.0
+
+- **(Stable Version)**
+- **FEAT**: Implemented MicrosoftOAuth SignIn & Its SocialButton
+- **REFACTOR**: Moved the AuthController class into a new file and exported it in fireauth.dart
+- **DOCS**: Updated Documentation
+- **FEAT**: Removed getUserInformation and saveUserInformation from HotRestartBypassMechanism as it was not useful.
+- **CHORE**: Updated Example Project
+
 ## 0.2.0
 
 - **(Stable Version)**

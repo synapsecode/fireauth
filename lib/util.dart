@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,44 +18,12 @@ class HotRestartBypassMechanism {
 
     SharedPreferences p = await prefs;
     p.setBool('is_logged_in', isLoggedIn);
-    if (!isLoggedIn) {
-      p.setString('user_info_json', ''); //Delete Associated UserInfo
-    }
-  }
-
-  ///Saves the User as a JSONMapString into SharedPreferences
-  static saveUserInformation(User u) async {
-    //Ignore Operation if Not in DebugMode on Web
-    if (!Foundation.kDebugMode && !Foundation.kIsWeb) return;
-    SharedPreferences p = await prefs;
-    Map userObj = {
-      'displayName': u.displayName,
-      'email': u.email,
-      'uid': u.uid,
-      'phoneNumber': u.phoneNumber,
-      'photoURL': u.photoURL,
-      'isAnonymous': u.isAnonymous,
-    };
-    p.setString('user_info_json', jsonEncode(userObj));
   }
 
   ///Gets the login status from SharedPreferences
   static Future<bool> getLoginStatus() async {
     SharedPreferences p = await prefs;
     return p.getBool('is_logged_in') ?? false;
-  }
-
-  ///Gets the UserInformation from SharedPreferences, JSONDecodes it and returns it.
-  ///Not used very often only when FirebaseAuth.instance.currentUser fails even when user is logged in
-  static Future<Map> getUserInformation() async {
-    SharedPreferences p = await prefs;
-    String json = p.getString('user_info_json');
-    if (json != null && json != '') {
-      return jsonDecode(json);
-    } else {
-      print("getUserInformation returned null");
-      return null;
-    }
   }
 }
 

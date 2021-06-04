@@ -10,6 +10,8 @@ class GenericSignInButton extends StatelessWidget {
   final Function(BuildContext) initiator;
   final Color foregroundColor;
   final Color backgroundColor;
+  final bool useBorder;
+  final Color borderColor;
 
   ///A Generic Tempalte to create Custom SignIn Buttons
   ///
@@ -34,6 +36,8 @@ class GenericSignInButton extends StatelessWidget {
     @required this.initiator,
     this.logoURL,
     this.customString,
+    this.useBorder = false,
+    this.borderColor = Colors.black,
   }) : super(key: key);
 
   @override
@@ -41,11 +45,15 @@ class GenericSignInButton extends StatelessWidget {
     return InkWell(
       onTap: () => initiator(context),
       child: Container(
-        color: backgroundColor,
+        width: 260,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: useBorder ? Border.all(color: borderColor) : null,
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (logoURL != null) ...[
                 SizedBox(
@@ -170,6 +178,7 @@ class AnonymousSignInButton extends StatelessWidget {
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       customString: 'Anonymous SignIn',
+      useBorder: true,
     );
   }
 }
@@ -227,7 +236,7 @@ class GithubSignInButton extends StatelessWidget {
   final Function(User) onSignInSuccessful;
   final Function(String) onError;
 
-  /// A Ready-To-Use Anonymous SignIn Button
+  /// A Ready-To-Use Github SignIn Button
   ///
   ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
   ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
@@ -262,6 +271,53 @@ class GithubSignInButton extends StatelessWidget {
       logoURL: 'https://img.icons8.com/ios-glyphs/30/ffffff/github.png',
       foregroundColor: foregroundColor,
       backgroundColor: backgroundColor,
+    );
+  }
+}
+
+class MicrosoftSignInButton extends StatelessWidget {
+  final Color foregroundColor;
+  final Color backgroundColor;
+  final bool enableWaitingSceeen;
+  final Function(User) onSignInSuccessful;
+  final Function(String) onError;
+
+  /// A Ready-To-Use Microsoft SignIn Button
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[foregroundColor] is the Text Color (default black)
+  ///
+  ///[backgroundColor] is the Background Color (default White)
+  ///
+  ///[onError] a Callback for any Error that may occur
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  const MicrosoftSignInButton({
+    Key key,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.enableWaitingSceeen,
+    this.onSignInSuccessful,
+    this.onError,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericSignInButton(
+      name: 'Microsoft',
+      initiator: (context) => AuthController.signInWithMicrosoft(
+        context,
+        onSignInSuccessful: onSignInSuccessful,
+        enableWaitingScreen: enableWaitingSceeen ?? false,
+        onError: onError,
+      ),
+      logoURL: 'https://img.icons8.com/color/48/000000/microsoft.png',
+      foregroundColor: foregroundColor ?? Colors.black,
+      backgroundColor: backgroundColor ?? Colors.grey[200],
+      useBorder: true,
     );
   }
 }

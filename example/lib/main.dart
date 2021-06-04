@@ -129,6 +129,36 @@ class _LoginPageState extends State<LoginPage> {
               ),
               */
               SizedBox(height: 8),
+              MicrosoftSignInButton(
+                enableWaitingSceeen: false,
+                //Callback for a Successful SignIn
+                onSignInSuccessful: (user) {
+                  print(
+                    "MSFT Successful!!! UID: ${user.uid}",
+                  );
+                },
+                onError: (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Microsoft OAuth Error Occured"),
+                      content: Text(e),
+                    ),
+                  );
+                },
+              ),
+              //Incase you want to make a new Button for MicrosoftSignInButton, you can use this method:
+              /*
+              AuthController.signInWithMicrosoft(
+                context,
+                signInWithRedirect: false,
+                enableWaitingScreen: false,
+                onError: (String e) {
+                  print(e);
+                },
+              ),
+              */
+              SizedBox(height: 8),
               //FireAuth Provided GoogleSignInButton
               GoogleSignInButton(
                 //If you want a waiting screen when GoogleSignIn is ongoing
@@ -162,8 +192,16 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               */
-              SizedBox(height: 8),
+              SizedBox(height: 20),
               //FireAuth Provided AnonymousSignInButton you can customize the colors if needed
+              Text(
+                "Anonymous Authentication",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                ),
+              ),
+              SizedBox(height: 15),
               AnonymousSignInButton(
                 enableWaitingSceeen: false,
                 //Callback for a Successful SignIn
@@ -205,11 +243,8 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: 5,
                     ),
-                    //Use this Widget to create a SignInButton if needed, for example,
-                    //we used it to create the Phone SignIn button
-                    GenericSignInButton(
-                      name: 'Phone SignIn',
-                      initiator: (context) {
+                    ElevatedButton.icon(
+                      onPressed: () {
                         //This is how you initiate a PhoneNumberSignIn
                         AuthController.signInWithPhoneNumber(
                           context,
@@ -243,10 +278,20 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         );
                       },
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.green[500],
-                      customString: 'Phone SignIn',
-                    ),
+                      icon: Icon(Icons.phone),
+                      label: Container(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'Phone SignIn',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green[500],
+                      ),
+                    )
                   ],
                 ),
               ),

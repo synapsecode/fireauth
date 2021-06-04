@@ -11,7 +11,7 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.2.0
+  fireauth: ^0.3.0
   
 #If you want the latest Major Stable Version use Version 0.0.5
 #If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
@@ -40,17 +40,18 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 </span>
 
 ## Currently Supported Authentication Methods:
-> 🔴 The status for iOS is currently unknown as It has not been tested yet.
+>🟡 The status for iOS is currently unknown as It has not been tested yet.
 
-| Auth Methods  | Android | iOS | Web |
-|---------------|---------|-----|-----|
-| Anonymous     |   ✔️    |  ❓   |  ✔️   |
-| Email         |   ✔️      |  ❓   |  ✔️   |
-| Phone         |   ✔️      |   ❓  |  ✔️   |
-| Google        |   ✔️      |  ❓   |  ✔️   |
-| Twitter OAuth |   ✔️      |   ❓  | ✔️    |
-| Github OAuth |   ✔️      |   ❓  | ✔️    |
 
+| Auth Methods  | Android    | iOS    | Web    |  Auth Methods   | Android | iOS | Web |
+|---------------|---------   |-----   |-----   |-----------------|---------|-----|----- |
+| Anonymous     |    🟢     |  🟡    |  🟢   |  Github          |   🟢  |  🟡 |  🟢 |
+| Email         |    🟢     |  🟡    |  🟢   |  Microsoft       |   🟢  |  🟡 | 🟢  | 
+| Phone         |    🟢     |  🟡   |  🟢   |                  |        |     |     |
+| Google        |    🟢     |  🟡    |  🟢   |                  |        |     |     |
+| Twitter       |    🟢     |  🟡    |  🟢  |                  |        |     |     |
+
+>🔵 Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)
 ---
 
 # Usage
@@ -82,8 +83,6 @@ return FireAuth(
 return AuthManager(
   loginFragment: LoginPage(),
   destinationFragment: HomePage(),
-  
-  //Other Arguements can be explored in the IDE, documentation has been provided
 );
 ```
 
@@ -163,6 +162,15 @@ AuthController.signInWithGithub(
 );
 ```
 
+### Microsoft OAuth SignIn
+```dart
+AuthController.signInWithMicrosoft(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
+```
+
 ### Logout
 ```dart
 AuthController.logout(context);
@@ -192,6 +200,7 @@ GoogleSignInButton()
 AnonymousSignInButton()
 TwitterSignInButton()
 GithubSignInButton()
+MicrosoftSignInButton()
 ```
 
 # Future Plans
