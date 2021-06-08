@@ -322,4 +322,52 @@ class MicrosoftSignInButton extends StatelessWidget {
   }
 }
 
+class FacebookSignInButton extends StatelessWidget {
+  final Color foregroundColor;
+  final Color backgroundColor;
+  final bool enableWaitingSceeen;
+  final Function(User) onSignInSuccessful;
+  final Function(String) onError;
+
+  /// A Ready-To-Use Facebook SignIn Button
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///[foregroundColor] is the Text Color (default black)
+  ///
+  ///[backgroundColor] is the Background Color (default White)
+  ///
+  ///[onError] a Callback for any Error that may occur
+  ///
+  ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
+  const FacebookSignInButton({
+    Key key,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.enableWaitingSceeen,
+    this.onSignInSuccessful,
+    this.onError,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericSignInButton(
+      name: 'Facebook',
+      initiator: (context) => AuthController.signInWithFacebook(
+        context,
+        onSignInSuccessful: onSignInSuccessful,
+        enableWaitingScreen: enableWaitingSceeen ?? false,
+        onError: onError,
+      ),
+      logoURL:
+          'https://img.icons8.com/fluent-systems-filled/48/FFFFFF/facebook.png',
+      foregroundColor: foregroundColor ?? Colors.white,
+      backgroundColor: backgroundColor ?? Color(0xFF415DAE),
+    );
+  }
+}
+
+
 // ============================SOCIAL BUTTONS=================================

@@ -1,3 +1,9 @@
+## 0.4.0
+- **(Stable Version)**
+- **FEAT**: Implemented FacebookNative & FacebookWeb SignIn & Its SocialButton.
+- **FIX**: enableWaitingScreen argument is now by default false for all AuthProviders
+- **CHORE**: Updated Example Project
+
 ## 0.3.0
 
 - **(Stable Version)**

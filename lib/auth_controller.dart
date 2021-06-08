@@ -29,7 +29,7 @@ class AuthController {
   static Future<User> signInWithGoogle(
     BuildContext context, {
     bool signInWithRedirect,
-    bool enableWaitingScreen,
+    bool enableWaitingScreen = false,
     Function(String) onError,
     Function onSignInSuccessful,
   }) async {
@@ -38,7 +38,7 @@ class AuthController {
       listen: false,
     ).signInWithGoogle(
       allowSignInWithRedirect: signInWithRedirect ?? false,
-      enableWaitingScreen: enableWaitingScreen ?? false,
+      enableWaitingScreen: enableWaitingScreen,
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
     );
@@ -56,7 +56,7 @@ class AuthController {
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
   static Future<User> signInAnonymously(
     BuildContext context, {
-    bool enableWaitingScreen,
+    bool enableWaitingScreen = false,
     Function(User) onSignInSuccessful,
     Function(String) onError,
   }) async {
@@ -64,7 +64,7 @@ class AuthController {
       context,
       listen: false,
     ).signInAnonymously(
-      enableWaitingScreen: enableWaitingScreen ?? true,
+      enableWaitingScreen: enableWaitingScreen,
       onSignInSuccessful: onSignInSuccessful,
       onError: onError,
     );
@@ -202,13 +202,13 @@ class AuthController {
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
+    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithTwitter(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen ?? true,
+      enableWaitingScreen: enableWaitingScreen,
     );
   }
 
@@ -234,13 +234,13 @@ class AuthController {
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
+    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithGithub(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen ?? true,
+      enableWaitingScreen: enableWaitingScreen,
     );
   }
 
@@ -268,13 +268,43 @@ class AuthController {
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
+    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithMicrosoft(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen ?? true,
+      enableWaitingScreen: enableWaitingScreen,
+    );
+  }
+
+  ///Initiates a Facebook Native/Web SignUp Flow
+  ///
+  ///[context] is necessary
+  ///
+  ///[onError] is a callback that is invoked when an error is encountered
+  ///
+  ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
+  ///It provides a User which you can use to perform other actions.
+  ///
+  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
+  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
+  ///on how you have setup your AuthManager.
+  ///
+  ///Setup Process
+  ///
+  ///Go the the FireSetup Documentation to learn more about the Additional Setup Required for Facebook Authentication
+  static Future<User> signInWithFacebook(
+    BuildContext context, {
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+    bool enableWaitingScreen = false,
+  }) async {
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
+    return await provider.signInWithFacebook(
+      onError: onError,
+      onSignInSuccessful: onSignInSuccessful,
+      enableWaitingScreen: enableWaitingScreen,
     );
   }
 
@@ -310,8 +340,10 @@ class AuthController {
   ///   },
   /// );
   /// ```
-  static User getCurrentUser(BuildContext context,
-      {Function(User) customMapping}) {
+  static User getCurrentUser(
+    BuildContext context, {
+    Function(User) customMapping,
+  }) {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     User cUser = provider.authInstance.currentUser;
     if (customMapping != null) return customMapping(cUser);

@@ -11,7 +11,7 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.3.0
+  fireauth: ^0.4.0
   
 #If you want the latest Major Stable Version use Version 0.0.5
 #If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
@@ -35,21 +35,22 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 
 ## Platform Support
 <span>
-<img src="https://img.icons8.com/color/48/000000/android-os.png"/>
+<img src="https://img.icons8.com/fluent/48/000000/android-tablet.png"/>
 <img src="https://img.icons8.com/fluent/48/000000/chrome.png"/>
 </span>
 
 ## Currently Supported Authentication Methods:
 >🟡 The status for iOS is currently unknown as It has not been tested yet.
 
+| Auth Methods  | Platforms    | Auth Methods  | Platforms    |
+|---------------|--------------|---------------|--------------|
+| Anonymous     | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Github  | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
+| Email & Password | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Microsoft | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
+| Phone | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Facebook| <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
+| Google | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/>
+| Twitter | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/>
 
-| Auth Methods  | Android    | iOS    | Web    |  Auth Methods   | Android | iOS | Web |
-|---------------|---------   |-----   |-----   |-----------------|---------|-----|----- |
-| Anonymous     |    🟢     |  🟡    |  🟢   |  Github          |   🟢  |  🟡 |  🟢 |
-| Email         |    🟢     |  🟡    |  🟢   |  Microsoft       |   🟢  |  🟡 | 🟢  | 
-| Phone         |    🟢     |  🟡   |  🟢   |                  |        |     |     |
-| Google        |    🟢     |  🟡    |  🟢   |                  |        |     |     |
-| Twitter       |    🟢     |  🟡    |  🟢  |                  |        |     |     |
+
 
 >🔵 Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)
 ---
@@ -92,6 +93,7 @@ The AuthController is a Dart class that contains several static methods that exp
 For more information on these methods, take a look at them using the IDE, they are very well documented, but this is all you need for it to work in the default way
 
 ### Sign In With Google
+>🟡 GoogleSignIn Needs [Additional Setup](https://github.com/synapsecode/FireSetup#additional-setup-instructions)
 ```dart
 AuthController.signInWithGoogle(
   context,
@@ -110,6 +112,7 @@ AuthController.signInAnonymously(
 ```
 
 ### Phone SignIn
+>🟡 PhoneSignIn Needs [Additional Setup](https://github.com/synapsecode/FireSetup#additional-setup-instructions)
 ```dart
 AuthController.signInWithPhoneNumber(
     context,
@@ -144,26 +147,34 @@ AuthController.signInWithEmailAndPassword(
 );
 ```
 
-### Twitter OAuth SignIn
+### SignIn With Facebook
+>🟡 FacebookSignIn Needs [Additional Setup](https://github.com/synapsecode/FireSetup#additional-setup-instructions)
 ```dart
+AuthController.signInWithFacebook(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
+```
+
+### SignIn Using OAuth Methods
+>🟡 OAuthSignIn Needs [Additional Setup](https://github.com/synapsecode/FireSetup#additional-setup-instructions)
+```dart
+//Twitter OAuth SignIn
 AuthController.signInWithTwiter(
   context,
   onSignInSuccessful: (User u) {},
   onError: (String e) {},
 );
-```
 
-### Github OAuth SignIn
-```dart
+//Github OAuth SignIn
 AuthController.signInWithGithub(
   context,
   onSignInSuccessful: (User u) {},
   onError: (String e) {},
 );
-```
 
-### Microsoft OAuth SignIn
-```dart
+//Microsoft OAuth SignIn
 AuthController.signInWithMicrosoft(
   context,
   onSignInSuccessful: (User u) {},
@@ -192,21 +203,28 @@ AuthController.getCurrentUser(
 
 If you just want a ready to use button that enables a particular Social SignIn, This is these are the Widgets that you're looking for!
 
+<span>
+<img src="https://i.ibb.co/sySnBp3/sib.jpg" align="right">  
+  
 ```dart
 //To Use SocialButtons you need this import!
 import 'package:fireauth/social.dart';
 
-GoogleSignInButton()
-AnonymousSignInButton()
-TwitterSignInButton()
-GithubSignInButton()
-MicrosoftSignInButton()
+TwitterSignInButton(),
+GithubSignInButton(),
+MicrosoftSignInButton(),
+GoogleSignInButton(),
+FacebookSignInButton(),
+AnonymousSignInButton(),
 ```
-
+  
+  
+</span>
+<br><br><br>
+  
 # Future Plans
 
 - Test FireAuth on iOS
-- Implement other OAuth Login Methods along With Facebook Login
 - Move FireAuth to sound null safety
 - Declare Production Ready Status
 

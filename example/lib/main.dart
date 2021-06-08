@@ -64,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             vertical: kIsWeb ? 10 : 20, horizontal: kIsWeb ? 10 : 20),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 30),
               Text(
@@ -72,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                   fontSize: 40,
                 ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
               Text(
@@ -192,6 +194,33 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               */
+              SizedBox(height: 8),
+              FacebookSignInButton(
+                onError: (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("FacebookOAuth Error Occured"),
+                      content: Text(e),
+                    ),
+                  );
+                },
+                onSignInSuccessful: (user) {
+                  print(
+                    "Facebook SignIn Successful!!! Name: ${user.displayName}",
+                  );
+                },
+              ),
+              //Incase you want to make a new Button for FacebookSignIn, you can use this method:
+              /*
+              AuthController.signInWithFacebook(
+                context,
+                enableWaitingScreen: false,
+                onError: (String e) {
+                  print(e);
+                },
+              ),
+              */
               SizedBox(height: 20),
               //FireAuth Provided AnonymousSignInButton you can customize the colors if needed
               Text(
@@ -200,6 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                   fontSize: 30,
                 ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 15),
               AnonymousSignInButton(
@@ -225,6 +255,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                   fontSize: 30,
                 ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
               Container(
@@ -302,6 +333,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                   fontSize: 30,
                 ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 15,
@@ -357,6 +389,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                   fontSize: 30,
                 ),
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 15,

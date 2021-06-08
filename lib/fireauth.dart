@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'oauth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 //Exports
 export 'auth_controller.dart';
@@ -400,6 +401,63 @@ class FireAuthProvider extends ChangeNotifier {
     return userCred?.user;
   }
   //============================</Phone Authentication>=========================
+
+  //============================<Facebook Authentication>=======================
+  Future<User> signInWithFacebook(
+      {Function(String) onError,
+      Function(User) onSignInSuccessful,
+      bool enableWaitingScreen}) async {
+    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
+    if (Foundation.kIsWeb) {
+      //The WebFlow
+      FacebookAuthProvider facebookProvider = FacebookAuthProvider();
+      facebookProvider.addScope('email');
+      facebookProvider.setCustomParameters({
+        'display': 'popup',
+      });
+
+      // Once signed in, return the UserCredential
+      User user;
+      try {
+        UserCredential userCred =
+            await FirebaseAuth.instance.signInWithPopup(facebookProvider);
+        user = userCred?.user;
+      } catch (e) {
+        if (onError != null) onError(e.toString());
+        print("FBError: $e");
+      }
+      if (user != null) {
+        isWaitingForSignInCompletion = false;
+        if (onSignInSuccessful != null) onSignInSuccessful(user);
+        //======================HOT RESTART BUG BYPASS============================
+        await HotRestartBypassMechanism.saveLoginState(true);
+        //======================HOT RESTART BUG BYPASS============================
+      }
+      return user;
+    } else {
+      //The NativeFlow
+      User user;
+      try {
+        final LoginResult result = await FacebookAuth.instance.login();
+        final facebookAuthCredential =
+            FacebookAuthProvider.credential(result.accessToken.token);
+        UserCredential userCred = await FirebaseAuth.instance
+            .signInWithCredential(facebookAuthCredential);
+        user = userCred?.user;
+
+        if (user != null) {
+          isWaitingForSignInCompletion = false;
+          if (onSignInSuccessful != null) onSignInSuccessful(user);
+        }
+      } catch (e) {
+        if (onError != null) onError(e.toString());
+        print("FBError: $e");
+      }
+
+      return user;
+    }
+  }
+  //============================</Facebook Authentication>======================
 
   //-----------------------------------OAUTH------------------------------------
 
