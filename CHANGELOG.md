@@ -1,3 +1,14 @@
+## 0.5.0
+- **(Major Stable Version)**
+- **FEAT**: Implemented Yahoo OAuth Sign In
+- **REFACTOR**: SocialButtons are now exported to fireauth.dart
+- **FEAT**: NewFacebookSocialButton & MiniSocialButtons
+- **FEAT**: SocialButtonConfiguration added to all SocialButtons instead of Constructor fields
+- **FEAT**: Removed WaitingScreen Feature as it was a useless and incomplete feature idea
+- **CHORE**: Updated Example Project and README
+- **DEPENDENCY**: Updated firebase_auth -> ^2.0.0, google_sign_in -> ^5.0.5, firebase_core -> ^1.4.0, firebase_auth_oauth -> ^1.0.2
+- **FEAT**: FireAuth now exports the firebase_auth, provider and firebase_core packages
+
 ## 0.4.0
 - **(Stable Version)**
 - **FEAT**: Implemented FacebookNative & FacebookWeb SignIn & Its SocialButton.

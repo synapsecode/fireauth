@@ -87,4 +87,18 @@ class OAuthEngine {
       onError: onError,
     );
   }
+
+  ///This Function is Responsible for initiating the Github OAuthEngine
+  static Future<User> yahooOAuthLogin({
+    Function(String) onError,
+  }) async {
+    return await performOAuthLogin(
+      provider: "yahoo.com",
+      scopes: [],
+      parameters: {"prompt": "login", "language": "en"},
+      onError: onError,
+    );
+  }
+
+  //AppleOAuth
 }

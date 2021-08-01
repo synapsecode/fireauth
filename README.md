@@ -11,10 +11,7 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.4.0
-  
-#If you want the latest Major Stable Version use Version 0.0.5
-#If you rely on the older firebase dependencies (pre-1.0) Use Version 0.0.5-legacy
+  fireauth: ^0.5.0
 ```
 
 Then run this command:
@@ -34,28 +31,36 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 > 🔴 If you do not use FireSetup there could be some issues due to incorrect manual setup.
 
 ## Platform Support
-<span>
-<img src="https://img.icons8.com/fluent/48/000000/android-tablet.png"/>
-<img src="https://img.icons8.com/fluent/48/000000/chrome.png"/>
-</span>
+- [X] Android
+- [x] Web
+- [ ] iOS *( Coming Soon )*
+- [ ] macOS *( Dependencies Unsupported )*
+- [ ] Windows *( Dependencies Unsupported )*
+- [ ] Linux *( Dependencies Unsupported )*
 
 ## Currently Supported Authentication Methods:
->🟡 The status for iOS is currently unknown as It has not been tested yet.
+>⚠️ The status for iOS is currently unknown as It has not been tested yet. <br>
+>☑️ All of these methods support Flutter Web and Flutter for Android unless specified otherwise
 
-| Auth Methods  | Platforms    | Auth Methods  | Platforms    |
-|---------------|--------------|---------------|--------------|
-| Anonymous     | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Github  | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
-| Email & Password | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Microsoft | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
-| Phone | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> | Facebook| <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/> |
-| Google | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/>
-| Twitter | <img src="https://img.icons8.com/fluent/24/000000/chrome.png"/>  <img src="https://img.icons8.com/fluent/26/000000/android-tablet.png"/>
+- [X] Anonymous
+- [x] Email&Password Register & SignIn
+- [x] Phone
+- [x] Google
+- [x] Twitter
+- [x] Github
+- [x] Microsoft
+- [x] Facebook
+- [x] Yahoo
+- [ ] Passwordless (Implementation Pending)
+- [ ] Apple (Implementation Pending)
 
 
-
->🔵 Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)
+>⚠️ Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)
 ---
 
 # Usage
+
+> ☑️ fireauth exports and exposes the firebase_core, firebase_auth and provider packages by default! Hence, you need not import them separately! This ensures you do not clutter your project with multiple imports! You can find the dependency versions [here](https://github.com/synapsecode/fireauth/blob/master/pubspec.yaml)
 
 ## Step 1: Initializing Firebase (main.dart)
 ```dart
@@ -157,7 +162,7 @@ AuthController.signInWithFacebook(
 );
 ```
 
-### SignIn Using OAuth Methods
+### SignIn Using OAuth2
 >🟡 OAuthSignIn Needs [Additional Setup](https://github.com/synapsecode/FireSetup#additional-setup-instructions)
 ```dart
 //Twitter OAuth SignIn
@@ -176,6 +181,13 @@ AuthController.signInWithGithub(
 
 //Microsoft OAuth SignIn
 AuthController.signInWithMicrosoft(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
+
+//Yahoo OAuth SignIn
+AuthController.signInWithYahoo(
   context,
   onSignInSuccessful: (User u) {},
   onError: (String e) {},
@@ -204,23 +216,56 @@ AuthController.getCurrentUser(
 If you just want a ready to use button that enables a particular Social SignIn, This is these are the Widgets that you're looking for!
 
 <span>
-<img src="https://i.ibb.co/sySnBp3/sib.jpg" align="right">  
+<img src="https://i.ibb.co/Q6ybLVh/fffff.jpg" align="right">  
   
 ```dart
-//To Use SocialButtons you need this import!
-import 'package:fireauth/social.dart';
+import 'package:fireauth/fireauth.dart';
 
-TwitterSignInButton(),
-GithubSignInButton(),
-MicrosoftSignInButton(),
-GoogleSignInButton(),
-FacebookSignInButton(),
-AnonymousSignInButton(),
+//SocialButtons
+TwitterSocialButton(),
+GithubSocialButton(),
+MicrosoftSocialButton(),
+GoogleSocialButton(),
+FacebookSocialButton(),
+//This Button Uses the new Facebook Design Language
+NewFacebookSocialButton(),
+YahooSocialButton(),
+AnonymousSocialButton(),
+
+//MiniSocialButtons
+MiniTwitterSocialButton(),
+MiniGithubSocialButton(),
+MiniMicrosoftSocialButton(),
+MiniGoogleSocialButton(),
+MiniFacebookSocialButton(),
+//This Button Uses the new Facebook Design Language
+MiniNewFacebookSocialButton(),
+MiniAnonymousSocialButton(),
+MiniYahooSocialButton(),
+
+/* Each of these buttons accept a SocialButtonConfiguration! Ex:
+GoogleSocialButton(
+  config: SocialButtonConfiguration(
+    foregroundColor: Colors.black,
+    backgroundColor: Colors.white,
+    onSignInSuccessful: (user) {
+      print("GoogleSignIn Successful!!! UID: ${user.uid}");
+    },
+    onError: (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("GoogleOAuth Error Occured"),
+          content: Text(e),
+        ),
+      );
+    },
+  ),
+),
+More info provided in the Docstring of the SocialButtonConfiguration class
+*/
 ```
-  
-  
 </span>
-<br><br><br>
   
 # Future Plans
 

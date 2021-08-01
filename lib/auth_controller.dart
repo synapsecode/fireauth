@@ -19,26 +19,20 @@ class AuthController {
   ///[signInWithRedirect] (default false) is a boolean that is Flutter Web only and basically allows you to chose if you want your
   ///OAuth Screen to be a popup or a redirect. Setting this to true, will use a redirect
   ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
   ///[onError] a Callback for any Error that may occur
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
   static Future<User> signInWithGoogle(
     BuildContext context, {
     bool signInWithRedirect,
-    bool enableWaitingScreen = false,
     Function(String) onError,
-    Function onSignInSuccessful,
+    Function(User) onSignInSuccessful,
   }) async {
     return await Provider.of<FireAuthProvider>(
       context,
       listen: false,
     ).signInWithGoogle(
       allowSignInWithRedirect: signInWithRedirect ?? false,
-      enableWaitingScreen: enableWaitingScreen,
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
     );
@@ -49,14 +43,9 @@ class AuthController {
   ///Enable Anonymous Authentication in your Firebase Authentication Console for this to work
   ///[context] is neccessary
   ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
   static Future<User> signInAnonymously(
     BuildContext context, {
-    bool enableWaitingScreen = false,
     Function(User) onSignInSuccessful,
     Function(String) onError,
   }) async {
@@ -64,7 +53,6 @@ class AuthController {
       context,
       listen: false,
     ).signInAnonymously(
-      enableWaitingScreen: enableWaitingScreen,
       onSignInSuccessful: onSignInSuccessful,
       onError: onError,
     );
@@ -184,31 +172,15 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
-  ///Setup Process
-  ///
-  ///Enable Twitter Authentication in the Firebase Authentication Console
-  ///
-  ///Open the Twitter Developer Console, Create a new app, add its API Key & Secret
-  ///to the respective fields in the TwitterAuthDialog in the FirebaseConsole.
-  ///
-  ///Then Copy the callbackURL from the console, Enable 3-Legged-OAuth in the Twitter
-  ///Developer console and add the callbackURL there and the setup is done!
   static Future<User> signInWithTwiter(
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithTwitter(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen,
     );
   }
 
@@ -220,27 +192,15 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
-  ///Setup Process
-  ///
-  ///Enable Github Authentication in the Firebase Console, Create a Github OAuth App, copy the client ID
-  ///and client secret and paste it in the dialog, copy the callback URL from the dialog and paste it where needed
-  ///in your Github OAuth App Configuration
   static Future<User> signInWithGithub(
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithGithub(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen,
     );
   }
 
@@ -252,29 +212,35 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
-  ///Setup Process
-  ///
-  ///Enable Microsoft Authentication, Open the Azure Portal, go to App Registrations, Register a new App,
-  ///Add the callbackURL from Firebase there and Register, Copy the Application ClientID.
-  ///
-  ///Go to Certificates & Secrets & Click on New Client Secret, Fill Details, CLick on Add, Copy the value and
-  ///past both ClientID & Client Secret in the Firebase Microsoft Auth Dialog in the Firebase Console
   static Future<User> signInWithMicrosoft(
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithMicrosoft(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen,
+    );
+  }
+
+  ///Initiates a Yahoo OAuth SignUp Flow based on the OAuthEngine Implementation
+  ///
+  ///[context] is necessary
+  ///
+  ///[onError] is a callback that is invoked when an error is encountered
+  ///
+  ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
+  ///It provides a User which you can use to perform other actions.
+  static Future<User> signInWithYahoo(
+    BuildContext context, {
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+  }) async {
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
+    return await provider.signInWithYahoo(
+      onError: onError,
+      onSignInSuccessful: onSignInSuccessful,
     );
   }
 
@@ -286,25 +252,15 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  ///
-  ///[enableWaitingScreen] (default false) is a boolean that enables or disables the AuthManager's Waiting Screen
-  ///Until the signIn is complete, the AuthManager will show a default waitingScreen or a custom WaitingScreen depending
-  ///on how you have setup your AuthManager.
-  ///
-  ///Setup Process
-  ///
-  ///Go the the FireSetup Documentation to learn more about the Additional Setup Required for Facebook Authentication
   static Future<User> signInWithFacebook(
     BuildContext context, {
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithFacebook(
       onError: onError,
       onSignInSuccessful: onSignInSuccessful,
-      enableWaitingScreen: enableWaitingScreen,
     );
   }
 

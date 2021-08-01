@@ -2,7 +2,7 @@
     package="com.example.example">
    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="example"
+        android:label="FireAuth"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,4 +1,4 @@
-import 'package:fireauth/social.dart';
+import 'package:fireauth/SocialButtons/util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //Import FireAuth
@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               SizedBox(height: 30),
               Text(
                 "FireAuth Example",
@@ -84,145 +84,171 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              //FireAuth Provided TwitterSignInButton
-              TwitterSignInButton(
-                onError: (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("TwitterOAuth Error Occured"),
-                      content: Text(e),
+              // Full Size Social Buttons
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TwitterSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "TwitterSignIn Successful!!! UID: ${user.uid}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("TwitterOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-              //Incase you want to make a new Button for TwitterSignInButton, you can use this method:
-              /*
-              AuthController.signInWithTwiter(
-                context,
-                signInWithRedirect: false,
-                enableWaitingScreen: false,
-                onError: (String e) {
-                  print(e);
-                },
-              ),
-              */
-              SizedBox(height: 8),
-              GithubSignInButton(
-                onError: (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("GithubOAuth Error Occured"),
-                      content: Text(e),
+                  ),
+                  GithubSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "GithubSignIn Successful!!! UID: ${user.uid}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("GithubOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-              //Incase you want to make a new Button for GithubSignInButton, you can use this method:
-              /*
-              AuthController.signInWithGithub(
-                context,
-                signInWithRedirect: false,
-                enableWaitingScreen: false,
-                onError: (String e) {
-                  print(e);
-                },
-              ),
-              */
-              SizedBox(height: 8),
-              MicrosoftSignInButton(
-                enableWaitingSceeen: false,
-                //Callback for a Successful SignIn
-                onSignInSuccessful: (user) {
-                  print(
-                    "MSFT Successful!!! UID: ${user.uid}",
-                  );
-                },
-                onError: (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Microsoft OAuth Error Occured"),
-                      content: Text(e),
+                  ),
+                  MicrosoftSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "MicrosoftSignIn Successful!!! UID: ${user.uid}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("MicrosoftOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-              //Incase you want to make a new Button for MicrosoftSignInButton, you can use this method:
-              /*
-              AuthController.signInWithMicrosoft(
-                context,
-                signInWithRedirect: false,
-                enableWaitingScreen: false,
-                onError: (String e) {
-                  print(e);
-                },
-              ),
-              */
-              SizedBox(height: 8),
-              //FireAuth Provided GoogleSignInButton
-              GoogleSignInButton(
-                //If you want a waiting screen when GoogleSignIn is ongoing
-                //Set this to true, you can customize it or add a new waitingScreen in the AuthenticationManager
-                //You can also customize the colors of this button
-                enableWaitingScreen: false,
-                onError: (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("GoogleOAuth Error Occured"),
-                      content: Text(e),
+                  ),
+                  GoogleSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "GoogleSignIn Successful!!! UID: ${user.uid}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("GoogleOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-                //Callback for a Successful SignIn
-                onSignInSuccessful: (user) {
-                  print(
-                    "Google SignIn Successful!!! Name: ${user.displayName}",
-                  );
-                },
-              ),
-              //Incase you want to make a new Button for GoogleSignIn, you can use this method:
-              /*
-              AuthController.signInWithGoogle(
-                context,
-                signInWithRedirect: false,
-                enableWaitingScreen: false,
-                onError: (String e) {
-                  print(e);
-                },
-              ),
-              */
-              SizedBox(height: 8),
-              FacebookSignInButton(
-                onError: (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("FacebookOAuth Error Occured"),
-                      content: Text(e),
+                  ),
+                  FacebookSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "FacebookSignIn Successful!!! Name: ${user.displayName}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("FacebookOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-                onSignInSuccessful: (user) {
-                  print(
-                    "Facebook SignIn Successful!!! Name: ${user.displayName}",
-                  );
-                },
+                  ),
+                  NewFacebookSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "FacebookSignIn Successful!!! Name: ${user.displayName}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("FacebookOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  YahooSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "YahooSignIn Successful!!! Name: ${user.displayName}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("YahooOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ].spaceBetweenColumnElements(8),
               ),
-              //Incase you want to make a new Button for FacebookSignIn, you can use this method:
-              /*
-              AuthController.signInWithFacebook(
-                context,
-                enableWaitingScreen: false,
-                onError: (String e) {
-                  print(e);
-                },
-              ),
-              */
               SizedBox(height: 20),
-              //FireAuth Provided AnonymousSignInButton you can customize the colors if needed
+              // The Mini Sign In Buttons
+              Container(
+                width: 260,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        MiniTwitterSocialButton(),
+                        MiniGithubSocialButton(),
+                        MiniMicrosoftSocialButton(),
+                        MiniGoogleSocialButton(),
+                        MiniFacebookSocialButton(),
+                      ].spaceBetweenRowElements(10),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        MiniNewFacebookSocialButton(),
+                        MiniAnonymousSocialButton(),
+                        MiniYahooSocialButton(),
+                      ].spaceBetweenRowElements(10),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20),
+              //FireAuth Provided AnonymousSocialButton you can customize the colors if needed
               Text(
                 "Anonymous Authentication",
                 style: TextStyle(
@@ -232,22 +258,15 @@ class _LoginPageState extends State<LoginPage> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 15),
-              AnonymousSignInButton(
-                enableWaitingSceeen: false,
-                //Callback for a Successful SignIn
-                onSignInSuccessful: (user) {
-                  print(
-                    "Anonymous SignIn Successful!!! UID: ${user.uid}",
-                  );
-                },
-              ),
-              //Incase you want your own AnonymousSignInButton then use this method:
-              /*
-                AuthController.signInAnonymously(
-                  context,
-                  enableWaitingScreen: false,
+              AnonymousSocialButton(
+                config: SocialButtonConfiguration(
+                  onSignInSuccessful: (user) {
+                    print(
+                      "Anonymous SignIn Successful!!! UID: ${user.uid}",
+                    );
+                  },
                 ),
-              */
+              ),
               SizedBox(height: 30),
               Text(
                 "Phone Authentication",
@@ -452,7 +471,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
               // Use AuthController.logout(context) to logout from anywhere
-              GenericSignInButton(
+              GenericSocialButton(
                 name: 'Logout',
                 initiator: (context) => AuthController.logout(
                   context,
@@ -510,5 +529,25 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+extension ListSpacing on List<Widget> {
+  List<Widget> spaceBetweenRowElements(double x) {
+    List<Widget> y = [];
+    this.forEach((e) {
+      y.add(e);
+      y.add(SizedBox(width: x));
+    });
+    return y.sublist(0, y.length - 1);
+  }
+
+  List<Widget> spaceBetweenColumnElements(double x) {
+    List<Widget> y = [];
+    this.forEach((e) {
+      y.add(e);
+      y.add(SizedBox(height: x));
+    });
+    return y.sublist(0, y.length - 1);
   }
 }

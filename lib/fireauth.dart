@@ -1,6 +1,5 @@
 library fireauth;
 
-import 'package:fireauth/util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' as Foundation;
@@ -8,11 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'oauth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 //Exports
 export 'auth_controller.dart';
+export 'package:fireauth/SocialButtons/social_buttons.dart';
+export 'package:fireauth/SocialButtons/mini_social_buttons.dart';
+// Exporting Imported Plugins
+export 'package:firebase_core/firebase_core.dart';
+export 'package:firebase_auth/firebase_auth.dart';
+export 'package:provider/provider.dart';
 
 /// Initializes Firebase for Mobile Devices
 ///
@@ -42,25 +48,16 @@ class AuthErrors {
 /// This ChangeNotifier exposes the entire Authentication System
 class FireAuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _isWaitingForSignInCompletion = false;
 
   FirebaseAuth get authInstance => _auth;
-  bool get isWaitingForSignInCompletion => _isWaitingForSignInCompletion;
-
-  set isWaitingForSignInCompletion(bool x) {
-    _isWaitingForSignInCompletion = x;
-    notifyListeners();
-  }
 
   //=============================<Google SignIn>=========================
   Future<User> signInWithGoogle({
     bool allowSignInWithRedirect = false,
-    bool enableWaitingScreen = true,
     Function(String) onError,
     Function(User) onSignInSuccessful,
   }) async {
     User recievedUser;
-    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
     try {
       if (Foundation.kIsWeb) {
         //Web Platform Only GoogleSignIn
@@ -103,21 +100,17 @@ class FireAuthProvider extends ChangeNotifier {
           print("AuthenticationError(Google): $e");
       }
     }
-    if (enableWaitingScreen) isWaitingForSignInCompletion = false;
     return recievedUser;
   }
   //============================</Google SignIn>=========================
 
   //=============================<Anonymous SignIN>=========================
   Future<User> signInAnonymously({
-    bool enableWaitingScreen,
     Function(User) onSignInSuccessful,
     Function(String) onError,
   }) async {
     try {
-      if (enableWaitingScreen) isWaitingForSignInCompletion = true;
       UserCredential userCred = await _auth.signInAnonymously();
-      isWaitingForSignInCompletion = false;
 
       //======================HOT RESTART BUG BYPASS============================
       await HotRestartBypassMechanism.saveLoginState(true);
@@ -128,7 +121,6 @@ class FireAuthProvider extends ChangeNotifier {
       return userCred.user;
     } catch (e) {
       print("AuthenticationError(Anonymous): $e");
-      if (enableWaitingScreen) isWaitingForSignInCompletion = false;
       if (onError != null) onError(e);
       return null;
     }
@@ -403,11 +395,10 @@ class FireAuthProvider extends ChangeNotifier {
   //============================</Phone Authentication>=========================
 
   //============================<Facebook Authentication>=======================
-  Future<User> signInWithFacebook(
-      {Function(String) onError,
-      Function(User) onSignInSuccessful,
-      bool enableWaitingScreen}) async {
-    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
+  Future<User> signInWithFacebook({
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+  }) async {
     if (Foundation.kIsWeb) {
       //The WebFlow
       FacebookAuthProvider facebookProvider = FacebookAuthProvider();
@@ -427,7 +418,6 @@ class FireAuthProvider extends ChangeNotifier {
         print("FBError: $e");
       }
       if (user != null) {
-        isWaitingForSignInCompletion = false;
         if (onSignInSuccessful != null) onSignInSuccessful(user);
         //======================HOT RESTART BUG BYPASS============================
         await HotRestartBypassMechanism.saveLoginState(true);
@@ -446,7 +436,6 @@ class FireAuthProvider extends ChangeNotifier {
         user = userCred?.user;
 
         if (user != null) {
-          isWaitingForSignInCompletion = false;
           if (onSignInSuccessful != null) onSignInSuccessful(user);
         }
       } catch (e) {
@@ -465,13 +454,10 @@ class FireAuthProvider extends ChangeNotifier {
   Future<User> signInWithTwitter({
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
   }) async {
-    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
     User user = await OAuthEngine.twitterOAuthSignIn(
       onError: onError,
     );
-    isWaitingForSignInCompletion = false;
     if (user != null) {
       if (onSignInSuccessful != null) onSignInSuccessful(user);
       //======================HOT RESTART BUG BYPASS============================
@@ -485,13 +471,10 @@ class FireAuthProvider extends ChangeNotifier {
   Future<User> signInWithGithub({
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
   }) async {
-    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
     User user = await OAuthEngine.githubOAuthSignIn(
       onError: onError,
     );
-    isWaitingForSignInCompletion = false;
     if (user != null) {
       if (onSignInSuccessful != null) onSignInSuccessful(user);
       //======================HOT RESTART BUG BYPASS============================
@@ -505,13 +488,10 @@ class FireAuthProvider extends ChangeNotifier {
   Future<User> signInWithMicrosoft({
     Function(String) onError,
     Function(User) onSignInSuccessful,
-    bool enableWaitingScreen,
   }) async {
-    if (enableWaitingScreen) isWaitingForSignInCompletion = true;
     User user = await OAuthEngine.microsoftOAuthLogin(
       onError: onError,
     );
-    isWaitingForSignInCompletion = false;
     if (user != null) {
       if (onSignInSuccessful != null) onSignInSuccessful(user);
       //======================HOT RESTART BUG BYPASS============================
@@ -521,12 +501,27 @@ class FireAuthProvider extends ChangeNotifier {
     return user;
   }
 
+  //Yahoo
+  Future<User> signInWithYahoo({
+    Function(String) onError,
+    Function(User) onSignInSuccessful,
+  }) async {
+    User user = await OAuthEngine.yahooOAuthLogin(
+      onError: onError,
+    );
+    if (user != null) {
+      if (onSignInSuccessful != null) onSignInSuccessful(user);
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      //======================HOT RESTART BUG BYPASS============================
+    }
+    return user;
+  }
   //-----------------------------------OAUTH------------------------------------
 
   logout({Function onLogout}) async {
     await FirebaseAuth.instance.signOut();
     if (onLogout != null) onLogout();
-    isWaitingForSignInCompletion = false; //To Update ChangeNotifier
     await HotRestartBypassMechanism.saveLoginState(false);
     print("Logged Out");
   }
@@ -569,40 +564,22 @@ class AuthManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FireAuthProvider>(context);
-    final Widget defaultWaitingScreen = Container(
-      color: defaultWaitingScreenBackgroundColor,
-      child: Stack(
-        children: [
-          Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                defaultWaitingScreenLoaderColor,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
     return StreamBuilder(
       stream: provider.authInstance.authStateChanges(),
       builder: (context, snapshot) {
-        if (provider.isWaitingForSignInCompletion) {
-          return customWaitingScreen ?? defaultWaitingScreen;
+        if (snapshot.hasData) {
+          return destinationFragment;
         } else {
-          if (snapshot.hasData) {
-            return destinationFragment;
+          //Only in Debug Mode & in Web
+          if (Foundation.kDebugMode && Foundation.kIsWeb) {
+            //---------------------HOT RESTART BYPASS--------------------------
+            return HotRestartByPassBuilder(
+              destinationFragment: destinationFragment,
+              loginFragment: loginFragment,
+            );
+            //-----------------------------------------------------------------
           } else {
-            //Only in Debug Mode & in Web
-            if (Foundation.kDebugMode && Foundation.kIsWeb) {
-              //---------------------HOT RESTART BYPASS--------------------------
-              return HotRestartByPassBuilder(
-                destinationFragment: destinationFragment,
-                loginFragment: loginFragment,
-              );
-              //-----------------------------------------------------------------
-            } else {
-              return loginFragment;
-            }
+            return loginFragment;
           }
         }
       },
@@ -634,6 +611,59 @@ class FireAuth extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => FireAuthProvider(),
       child: child,
+    );
+  }
+}
+
+/// This class iis basically a HotRestartBypassMechanism. the firebaseSDK went through a bunch
+/// of updates from the firebase team which fixed a few production bugs, in that process a dev bug
+/// was discovered that basically doesn't allow StreamBuilder to work properly with Flutter Web on Hot Restart
+/// hence, I had to come up with a custom solution to fix it.
+class HotRestartBypassMechanism {
+  ///The Standard SharedPreference instance
+  static final Future<SharedPreferences> prefs =
+      SharedPreferences.getInstance();
+
+  ///Saves the Login State (true) for LoggedIn and (false) for LoggedOut
+  static saveLoginState(bool isLoggedIn) async {
+    //Ignore Operation if Not in DebugMode on Web
+    if (!Foundation.kDebugMode && !Foundation.kIsWeb) return;
+
+    SharedPreferences p = await prefs;
+    p.setBool('is_logged_in', isLoggedIn);
+  }
+
+  ///Gets the login status from SharedPreferences
+  static Future<bool> getLoginStatus() async {
+    SharedPreferences p = await prefs;
+    return p.getBool('is_logged_in') ?? false;
+  }
+}
+
+class HotRestartByPassBuilder extends StatelessWidget {
+  final Widget destinationFragment;
+  final Widget loginFragment;
+  const HotRestartByPassBuilder({
+    Key key,
+    this.destinationFragment,
+    this.loginFragment,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: HotRestartBypassMechanism.getLoginStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data) {
+            return destinationFragment;
+          } else {
+            return loginFragment;
+          }
+        } else {
+          return loginFragment;
+        }
+      },
     );
   }
 }
