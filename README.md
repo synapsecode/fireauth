@@ -31,28 +31,28 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 > 🔴 If you do not use FireSetup there could be some issues due to incorrect manual setup.
 
 ## Platform Support
-- [X] Android
-- [x] Web
-- [ ] iOS *( Coming Soon )*
-- [ ] macOS *( Dependencies Unsupported )*
-- [ ] Windows *( Dependencies Unsupported )*
-- [ ] Linux *( Dependencies Unsupported )*
+- Android
+- Web
+- iOS *( Coming Soon )*
+- macOS *( Dependencies Unsupported )*
+- Windows *( Dependencies Unsupported )*
+- Linux *( Dependencies Unsupported )*
 
 ## Currently Supported Authentication Methods:
 >⚠️ The status for iOS is currently unknown as It has not been tested yet. <br>
 >☑️ All of these methods support Flutter Web and Flutter for Android unless specified otherwise
 
-- [X] Anonymous
-- [x] Email&Password Register & SignIn
-- [x] Phone
-- [x] Google
-- [x] Twitter
-- [x] Github
-- [x] Microsoft
-- [x] Facebook
-- [x] Yahoo
-- [ ] Passwordless (Implementation Pending)
-- [ ] Apple (Implementation Pending)
+- Anonymous
+- Email & Password Register & SignIn
+- Phone
+- Google
+- Twitter
+- Github
+- Microsoft
+- Facebook
+- Yahoo
+- Passwordless (Implementation Pending)
+- Apple (Implementation Pending)
 
 
 >⚠️ Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)

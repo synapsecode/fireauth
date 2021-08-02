@@ -530,9 +530,6 @@ class FireAuthProvider extends ChangeNotifier {
 class AuthManager extends StatelessWidget {
   final Widget loginFragment;
   final Widget destinationFragment;
-  final Widget customWaitingScreen;
-  final Color defaultWaitingScreenLoaderColor;
-  final Color defaultWaitingScreenBackgroundColor;
 
   ///An Authentication Gateway for your application
   ///
@@ -543,22 +540,10 @@ class AuthManager extends StatelessWidget {
   ///[loginFragment] (required) - The Login View
   ///
   ///[destinationFragment] (required) - The Destination View
-  ///
-  ///[customWaitingScreen] if your signIn method allows a waiting screen, you can customize the waiting
-  ///screen using this arguement
-  ///
-  ///[defaultWaitingScreenLoaderColor] if you use the default waiting screen, this arguement changes the
-  ///color of the CircularLoader
-  ///
-  ///[defaultWaitingScreenBackgroundColor] if you use the default waiting screen, this arguement changes the
-  ///background color
   const AuthManager({
     Key key,
     @required this.loginFragment,
     @required this.destinationFragment,
-    this.customWaitingScreen,
-    this.defaultWaitingScreenLoaderColor = Colors.white,
-    this.defaultWaitingScreenBackgroundColor = Colors.black,
   }) : super(key: key);
 
   @override
