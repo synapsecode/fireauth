@@ -39,7 +39,27 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.250244166672-t1t0vcpsj6to7u3ccs5r9kh0a27n2ibi</string>
+                <!--  Facebook Setup  -->
+                <string>fb859045908151881</string>
+                <!--  Facebook Setup -->
+			</array>
+		</dict>
+	</array>
+    <!--  Facebook Setuo  -->
+    <key>FacebookAppID</key>
+    <string>859045908151881</string>
+    <key>FacebookClientToken</key>
+    <string>b5435589a1ccaa73b1c6b54cffad3ca1</string>
+    <key>FacebookDisplayName</key>
+    <string>FireAuth Example</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <!--  Facebook Setuo  -->
 </dict>
 </plist>
