@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:fireauth/SocialButtons/util.dart';
 import 'package:fireauth/auth_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 
 class GenericSocialButton extends StatelessWidget {
@@ -56,7 +56,9 @@ class GenericSocialButton extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-              vertical: 10, horizontal: Platform.isAndroid ? 20 : 0),
+              vertical: 10,
+              horizontal:
+                  Foundation.kIsWeb ? 20 : (Platform.isAndroid ? 20 : 0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
