@@ -1,4 +1,4 @@
-## 0.6.0
+## 0.6.0-dev
 - **(Stable Version)**
 - **FEAT**: Introduces Early Support for iOS (Tested on the iOS Simulator)
 
