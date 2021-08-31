@@ -1,2 +1,2 @@
 - Yahoo SignIn Works but the User returned only has a UID. All other information is null
-- No Apple Support Yet
+- No AppleID Support Yet

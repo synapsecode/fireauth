@@ -1,6 +1,6 @@
-## 0.6.0-dev
+## 0.6.0
 - **(Stable Version)**
-- **FEAT**: Introduces Early Support for iOS (Tested on the iOS Simulator)
+- **FEAT**: Introduces Support for iOS (Tested on the iOS Simulator)
 
 ## 0.5.0
 - **(Major Stable Version)**

@@ -11,7 +11,7 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.5.0
+  fireauth: ^0.6.0
 ```
 
 Then run this command:
@@ -28,19 +28,17 @@ import 'package:fireauth/fireauth.dart';
 ### Use [My FireSetup Utility](https://github.com/synapsecode/FireSetup)
 
 Setting up Firebase correctly to work with all the Authentication Methods provided by FireAuth can sometimes be difficult and tedious!  Hence, I have come up with a python script that will do most of the hardwork for you! It also contains well documented instructions so that the entire process is very smooth. It's better than the official documentation! 
-> 🔴 If you do not use FireSetup there could be some issues due to incorrect manual setup.
+> 🔴  If you do not use FireSetup there could be some issues due to incorrect manual setup.
 
 ## Platform Support
 - Android
 - Web
-- iOS *( Coming Soon )*
+- iOS
 - macOS *( Dependencies Unsupported )*
 - Windows *( Dependencies Unsupported )*
 - Linux *( Dependencies Unsupported )*
 
 ## Currently Supported Authentication Methods:
->⚠️ The status for iOS is currently unknown as It has not been tested yet. <br>
->☑️ All of these methods support Flutter Web and Flutter for Android unless specified otherwise
 
 - Anonymous
 - Email & Password Register & SignIn
@@ -269,7 +267,6 @@ More info provided in the Docstring of the SocialButtonConfiguration class
   
 # Future Plans
 
-- Test FireAuth on iOS
 - Move FireAuth to sound null safety
 - Declare Production Ready Status
 
