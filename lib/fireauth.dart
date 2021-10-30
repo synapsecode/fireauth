@@ -52,12 +52,12 @@ class FireAuthProvider extends ChangeNotifier {
   FirebaseAuth get authInstance => _auth;
 
   //=============================<Google SignIn>=========================
-  Future<User> signInWithGoogle({
+  Future<User?> signInWithGoogle({
     bool allowSignInWithRedirect = false,
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
-    User recievedUser;
+    User? recievedUser;
     try {
       if (Foundation.kIsWeb) {
         //Web Platform Only GoogleSignIn
@@ -72,12 +72,12 @@ class FireAuthProvider extends ChangeNotifier {
         recievedUser = userCred.user;
       } else {
         //Mobile Platforms
-        final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        final GoogleSignInAuthentication? googleAuth =
+            await googleUser?.authentication;
         final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
         );
 
         UserCredential userCred =
@@ -105,9 +105,9 @@ class FireAuthProvider extends ChangeNotifier {
   //============================</Google SignIn>=========================
 
   //=============================<Anonymous SignIN>=========================
-  Future<User> signInAnonymously({
-    Function(User) onSignInSuccessful,
-    Function(String) onError,
+  Future<User?> signInAnonymously({
+    Function(User?)? onSignInSuccessful,
+    Function(String)? onError,
   }) async {
     try {
       UserCredential userCred = await _auth.signInAnonymously();
@@ -116,23 +116,22 @@ class FireAuthProvider extends ChangeNotifier {
       await HotRestartBypassMechanism.saveLoginState(true);
       //======================HOT RESTART BUG BYPASS============================
 
-      if (onSignInSuccessful != null && userCred != null)
-        onSignInSuccessful(userCred.user);
+      if (onSignInSuccessful != null) onSignInSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
-      print("AuthenticationError(Anonymous): $e");
-      if (onError != null) onError(e);
+      print("AuthenticationError(Anonymous): ${e.toString()}");
+      if (onError != null) onError(e.toString());
       return null;
     }
   }
   //============================</Anonymous SignIN>=========================
 
   //=============================<EMAIL & PASSWORD SIGNIN>=========================
-  Future<User> registerWithEmailAndPassword({
-    String email,
-    String password,
-    Function(String) onError,
-    Function(User) onRegisterSuccessful,
+  Future<User?> registerWithEmailAndPassword({
+    required String email,
+    required String password,
+    Function(String)? onError,
+    Function(User?)? onRegisterSuccessful,
   }) async {
     try {
       UserCredential userCred = await _auth.createUserWithEmailAndPassword(
@@ -144,8 +143,7 @@ class FireAuthProvider extends ChangeNotifier {
       await HotRestartBypassMechanism.saveLoginState(true);
       //======================HOT RESTART BUG BYPASS============================
 
-      if (onRegisterSuccessful != null && userCred != null)
-        onRegisterSuccessful(userCred.user);
+      if (onRegisterSuccessful != null) onRegisterSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
       print("RegisterError(Email&Password): $e");
@@ -155,12 +153,12 @@ class FireAuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<User> signInWithEmailAndPassword({
-    String email,
-    String password,
-    Function onIncorrectCredentials,
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+    Function? onIncorrectCredentials,
+    Function(String)? onError,
+    Function(User?)? onSignInSuccessful,
   }) async {
     try {
       UserCredential userCred = await _auth.signInWithEmailAndPassword(
@@ -172,8 +170,7 @@ class FireAuthProvider extends ChangeNotifier {
       await HotRestartBypassMechanism.saveLoginState(true);
       //======================HOT RESTART BUG BYPASS============================
 
-      if (onSignInSuccessful != null && userCred != null)
-        onSignInSuccessful(userCred.user);
+      if (onSignInSuccessful != null) onSignInSuccessful(userCred.user);
       return userCred.user;
     } catch (e) {
       if (e.toString().contains(AuthErrors.wrongPassword)) {
@@ -189,23 +186,23 @@ class FireAuthProvider extends ChangeNotifier {
   //============================</EMAIL & PASSWORD SIGNIN>=========================
 
   //============================<Phone Authentication>=========================-
-  Future<User> signInWithPhoneNumber({
-    BuildContext context,
-    String phoneNumber,
-    Function onInvalidVerificationCode,
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
-    bool closeVerificationPopupAfterSubmit,
+  Future<User?> signInWithPhoneNumber({
+    BuildContext? context,
+    String? phoneNumber,
+    Function? onInvalidVerificationCode,
+    Function(String)? onError,
+    Function(User?)? onSignInSuccessful,
+    bool? closeVerificationPopupAfterSubmit,
     bool enableDebugLog = true,
     bool showInitiationToast = true,
   }) async {
     TextEditingController ctr = TextEditingController();
-    UserCredential userCred;
+    UserCredential? userCred;
 
     final log = (String x) => enableDebugLog ? print(x) : null;
 
     Widget generatePhoneVerificationDialog({
-      Future<bool> Function(String) onSubmit,
+      Future<bool> Function(String)? onSubmit,
       bool closeVerificationPopupAfterSubmit = true,
     }) {
       return AlertDialog(
@@ -223,14 +220,14 @@ class FireAuthProvider extends ChangeNotifier {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.black),
               onPressed: () async {
-                if (closeVerificationPopupAfterSubmit) Navigator.pop(context);
-                bool isDone = await onSubmit(ctr.value.text);
+                if (closeVerificationPopupAfterSubmit) Navigator.pop(context!);
+                bool isDone = await onSubmit!(ctr.value.text);
                 if (isDone) {
                   //======================HOT RESTART BUG BYPASS===============
                   await HotRestartBypassMechanism.saveLoginState(true);
                   //======================HOT RESTART BUG BYPASS===============
                   if (!closeVerificationPopupAfterSubmit)
-                    Navigator.pop(context);
+                    Navigator.pop(context!);
                 }
               },
               child: Text("Verify"),
@@ -254,9 +251,9 @@ class FireAuthProvider extends ChangeNotifier {
       //The Web Flow
       try {
         ConfirmationResult confirmationResult =
-            await _auth.signInWithPhoneNumber(phoneNumber);
+            await _auth.signInWithPhoneNumber(phoneNumber!);
         showDialog(
-          context: context,
+          context: context!,
           builder: (context) {
             return generatePhoneVerificationDialog(
               closeVerificationPopupAfterSubmit:
@@ -280,7 +277,7 @@ class FireAuthProvider extends ChangeNotifier {
 
                 //Successful SignIn Callback
                 if (onSignInSuccessful != null && userCred != null) {
-                  onSignInSuccessful(userCred.user);
+                  onSignInSuccessful(userCred!.user);
                 }
 
                 return isDone;
@@ -306,7 +303,7 @@ class FireAuthProvider extends ChangeNotifier {
 
         final verificationCompleted = (PhoneAuthCredential credential) async {
           log("VerificationCompleted");
-          Navigator.pop(context); //To Remove Dialog when AutoSMS Verified
+          Navigator.pop(context!); //To Remove Dialog when AutoSMS Verified
           try {
             await _auth.signInWithCredential(credential);
           } catch (e) {
@@ -322,10 +319,10 @@ class FireAuthProvider extends ChangeNotifier {
           );
         };
 
-        final onCodeSent = (String verificationId, int resendToken) {
+        final onCodeSent = (String verificationId, int? resendToken) {
           log("onCodeSent :: OTP Has been sent");
           showDialog(
-            context: context,
+            context: context!,
             builder: (context) {
               return generatePhoneVerificationDialog(
                 closeVerificationPopupAfterSubmit:
@@ -342,7 +339,7 @@ class FireAuthProvider extends ChangeNotifier {
 
                     //Successful SignIn Callback
                     if (onSignInSuccessful != null && userCred != null) {
-                      onSignInSuccessful(userCred.user);
+                      onSignInSuccessful(userCred!.user);
                     }
                   } catch (e) {
                     String error = e.toString();
@@ -367,7 +364,7 @@ class FireAuthProvider extends ChangeNotifier {
         //Calling the Verify Phone Number Method & Catching Async Errors
         FirebaseAuth.instance
             .verifyPhoneNumber(
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber!,
           verificationCompleted: verificationCompleted,
           verificationFailed: verificationFailed,
           codeSent: onCodeSent,
@@ -378,7 +375,7 @@ class FireAuthProvider extends ChangeNotifier {
             log("Future<VerifyPhoneNumber> complete");
           },
         ).onError(
-          (error, stackTrace) {
+          (dynamic error, stackTrace) {
             log("Error at func: Future<VerifyPhoneNumber> ::=> " +
                 error.toString());
             if (onError != null) onError(error.toString());
@@ -395,9 +392,9 @@ class FireAuthProvider extends ChangeNotifier {
   //============================</Phone Authentication>=========================
 
   //============================<Facebook Authentication>=======================
-  Future<User> signInWithFacebook({
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithFacebook({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     if (Foundation.kIsWeb) {
       //The WebFlow
@@ -408,11 +405,11 @@ class FireAuthProvider extends ChangeNotifier {
       });
 
       // Once signed in, return the UserCredential
-      User user;
+      User? user;
       try {
         UserCredential userCred =
             await FirebaseAuth.instance.signInWithPopup(facebookProvider);
-        user = userCred?.user;
+        user = userCred.user;
       } catch (e) {
         if (onError != null) onError(e.toString());
         print("FBError: $e");
@@ -426,14 +423,14 @@ class FireAuthProvider extends ChangeNotifier {
       return user;
     } else {
       //The NativeFlow
-      User user;
+      User? user;
       try {
         final LoginResult result = await FacebookAuth.instance.login();
         final facebookAuthCredential =
-            FacebookAuthProvider.credential(result.accessToken.token);
+            FacebookAuthProvider.credential(result.accessToken!.token);
         UserCredential userCred = await FirebaseAuth.instance
             .signInWithCredential(facebookAuthCredential);
-        user = userCred?.user;
+        user = userCred.user;
 
         if (user != null) {
           if (onSignInSuccessful != null) onSignInSuccessful(user);
@@ -451,11 +448,11 @@ class FireAuthProvider extends ChangeNotifier {
   //-----------------------------------OAUTH------------------------------------
 
   //Twitter
-  Future<User> signInWithTwitter({
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithTwitter({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
-    User user = await OAuthEngine.twitterOAuthSignIn(
+    User? user = await OAuthEngine.twitterOAuthSignIn(
       onError: onError,
     );
     if (user != null) {
@@ -468,11 +465,11 @@ class FireAuthProvider extends ChangeNotifier {
   }
 
   //Github
-  Future<User> signInWithGithub({
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithGithub({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
-    User user = await OAuthEngine.githubOAuthSignIn(
+    User? user = await OAuthEngine.githubOAuthSignIn(
       onError: onError,
     );
     if (user != null) {
@@ -485,11 +482,11 @@ class FireAuthProvider extends ChangeNotifier {
   }
 
   //Microsoft
-  Future<User> signInWithMicrosoft({
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithMicrosoft({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
-    User user = await OAuthEngine.microsoftOAuthLogin(
+    User? user = await OAuthEngine.microsoftOAuthLogin(
       onError: onError,
     );
     if (user != null) {
@@ -502,11 +499,11 @@ class FireAuthProvider extends ChangeNotifier {
   }
 
   //Yahoo
-  Future<User> signInWithYahoo({
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+  Future<User?> signInWithYahoo({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
-    User user = await OAuthEngine.yahooOAuthLogin(
+    User? user = await OAuthEngine.yahooOAuthLogin(
       onError: onError,
     );
     if (user != null) {
@@ -519,7 +516,7 @@ class FireAuthProvider extends ChangeNotifier {
   }
   //-----------------------------------OAUTH------------------------------------
 
-  logout({Function onLogout}) async {
+  logout({Function? onLogout}) async {
     await FirebaseAuth.instance.signOut();
     if (onLogout != null) onLogout();
     await HotRestartBypassMechanism.saveLoginState(false);
@@ -541,9 +538,9 @@ class AuthManager extends StatelessWidget {
   ///
   ///[destinationFragment] (required) - The Destination View
   const AuthManager({
-    Key key,
-    @required this.loginFragment,
-    @required this.destinationFragment,
+    Key? key,
+    required this.loginFragment,
+    required this.destinationFragment,
   }) : super(key: key);
 
   @override
@@ -573,7 +570,7 @@ class AuthManager extends StatelessWidget {
 }
 
 class FireAuth extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
   ///Exposes the FireAuthProvider to the whole widget tree
   ///
@@ -589,7 +586,7 @@ class FireAuth extends StatelessWidget {
   ///```
   ///
   ///[child] is your MaterialApp
-  const FireAuth({Key key, this.child}) : super(key: key);
+  const FireAuth({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -626,10 +623,10 @@ class HotRestartBypassMechanism {
 }
 
 class HotRestartByPassBuilder extends StatelessWidget {
-  final Widget destinationFragment;
-  final Widget loginFragment;
+  final Widget? destinationFragment;
+  final Widget? loginFragment;
   const HotRestartByPassBuilder({
-    Key key,
+    Key? key,
     this.destinationFragment,
     this.loginFragment,
   }) : super(key: key);
@@ -640,13 +637,13 @@ class HotRestartByPassBuilder extends StatelessWidget {
       future: HotRestartBypassMechanism.getLoginStatus(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data) {
-            return destinationFragment;
+          if (snapshot.data!) {
+            return destinationFragment!;
           } else {
-            return loginFragment;
+            return loginFragment!;
           }
         } else {
-          return loginFragment;
+          return loginFragment!;
         }
       },
     );

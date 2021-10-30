@@ -4,13 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GenericMiniSocialButton extends StatefulWidget {
-  final String logoURL;
-  final Function(BuildContext) initiator;
-  final Color backgroundColor;
+  final String? logoURL;
+  final Function(BuildContext)? initiator;
+  final Color? backgroundColor;
   final bool useBorder;
-  final Color borderColor;
+  final Color? borderColor;
   const GenericMiniSocialButton({
-    Key key,
+    Key? key,
     this.logoURL,
     this.initiator,
     this.backgroundColor,
@@ -27,18 +27,18 @@ class _GenericMiniSocialButtonState extends State<GenericMiniSocialButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => widget.initiator(context),
+      onTap: () => widget.initiator!(context),
       child: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
           color: widget.backgroundColor,
           border:
-              widget.useBorder ? Border.all(color: widget.borderColor) : null,
+              widget.useBorder ? Border.all(color: widget.borderColor!) : null,
         ),
         child: Padding(
           padding: EdgeInsets.all(5),
-          child: Image.network(widget.logoURL),
+          child: Image.network(widget.logoURL!),
         ),
       ),
     );
@@ -46,8 +46,8 @@ class _GenericMiniSocialButtonState extends State<GenericMiniSocialButton> {
 }
 
 class MiniGoogleSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniGoogleSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniGoogleSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,8 @@ class MiniGoogleSocialButton extends StatelessWidget {
 }
 
 class MiniTwitterSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniTwitterSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniTwitterSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +83,8 @@ class MiniTwitterSocialButton extends StatelessWidget {
 }
 
 class MiniGithubSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniGithubSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniGithubSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,15 +101,15 @@ class MiniGithubSocialButton extends StatelessWidget {
 }
 
 class MiniAnonymousSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniAnonymousSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniAnonymousSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GenericMiniSocialButton(
       initiator: (context) => AuthController.signInAnonymously(
         context,
-        onSignInSuccessful: (config?.onSignInSuccessful) ?? (User u) {},
+        onSignInSuccessful: (config?.onSignInSuccessful) ?? (User? u) {},
         onError: (config?.onError) ?? (String e) {},
       ),
       backgroundColor: (config?.backgroundColor) ?? Color(0xFF101010),
@@ -119,8 +119,8 @@ class MiniAnonymousSocialButton extends StatelessWidget {
 }
 
 class MiniMicrosoftSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniMicrosoftSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniMicrosoftSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -137,8 +137,8 @@ class MiniMicrosoftSocialButton extends StatelessWidget {
 }
 
 class MiniFacebookSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniFacebookSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniFacebookSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +155,8 @@ class MiniFacebookSocialButton extends StatelessWidget {
 }
 
 class MiniNewFacebookSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniNewFacebookSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniNewFacebookSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +173,8 @@ class MiniNewFacebookSocialButton extends StatelessWidget {
 }
 
 class MiniYahooSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
-  const MiniYahooSocialButton({Key key, this.config}) : super(key: key);
+  final SocialButtonConfiguration? config;
+  const MiniYahooSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

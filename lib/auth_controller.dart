@@ -22,11 +22,11 @@ class AuthController {
   ///[onError] a Callback for any Error that may occur
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static Future<User> signInWithGoogle(
+  static Future<User?> signInWithGoogle(
     BuildContext context, {
-    bool signInWithRedirect,
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    bool? signInWithRedirect,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     return await Provider.of<FireAuthProvider>(
       context,
@@ -44,10 +44,10 @@ class AuthController {
   ///[context] is neccessary
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static Future<User> signInAnonymously(
+  static Future<User?> signInAnonymously(
     BuildContext context, {
-    Function(User) onSignInSuccessful,
-    Function(String) onError,
+    Function(User?)? onSignInSuccessful,
+    Function(String)? onError,
   }) async {
     return await Provider.of<FireAuthProvider>(
       context,
@@ -73,12 +73,12 @@ class AuthController {
   ///[onError] is a callback to handle any errors during the process
   ///
   ///[onRegisterSuccessful] a Callback to perform any action after a successful SignIn
-  static Future<User> registerWithEmailAndPassword(
+  static Future<User?> registerWithEmailAndPassword(
     BuildContext context, {
-    @required String email,
-    @required String password,
-    Function(String) onError,
-    Function(User) onRegisterSuccessful,
+    required String email,
+    required String password,
+    Function(String)? onError,
+    Function(User?)? onRegisterSuccessful,
   }) async {
     return await Provider.of<FireAuthProvider>(context, listen: false)
         .registerWithEmailAndPassword(
@@ -104,13 +104,13 @@ class AuthController {
   ///[onIncorrectCredentials] is a callback to handle incorrect credentials
   ///
   ///[onSignInSuccessful] a Callback to perform any action after a successful SignIn
-  static Future<User> signInWithEmailAndPassword(
+  static Future<User?> signInWithEmailAndPassword(
     BuildContext context, {
-    @required String email,
-    @required String password,
-    Function(String) onError,
-    Function onIncorrectCredentials,
-    Function(User) onSignInSuccessful,
+    required String email,
+    required String password,
+    Function(String)? onError,
+    Function? onIncorrectCredentials,
+    Function(User?)? onSignInSuccessful,
   }) async {
     return await Provider.of<FireAuthProvider>(context, listen: false)
         .signInWithEmailAndPassword(
@@ -145,12 +145,12 @@ class AuthController {
   ///
   ///[closeVerificationPopupAfterSubmit] a boolean which when true, closes the OTP Verification Dialog after an attempt and if
   ///false leaves it open, basically if the User Wants to Retry
-  static Future<User> signInWithPhoneNumber(
+  static Future<User?> signInWithPhoneNumber(
     BuildContext context, {
-    String phoneNumber,
-    Function(String) onError,
-    Function onInvalidVerificationCode,
-    Function(User) onSignInSuccessful,
+    String? phoneNumber,
+    Function(String)? onError,
+    Function? onInvalidVerificationCode,
+    Function(User?)? onSignInSuccessful,
     bool closeVerificationPopupAfterSubmit = false,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
@@ -172,10 +172,10 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  static Future<User> signInWithTwiter(
+  static Future<User?> signInWithTwiter(
     BuildContext context, {
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithTwitter(
@@ -192,10 +192,10 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  static Future<User> signInWithGithub(
+  static Future<User?> signInWithGithub(
     BuildContext context, {
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithGithub(
@@ -212,10 +212,10 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  static Future<User> signInWithMicrosoft(
+  static Future<User?> signInWithMicrosoft(
     BuildContext context, {
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithMicrosoft(
@@ -232,10 +232,10 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  static Future<User> signInWithYahoo(
+  static Future<User?> signInWithYahoo(
     BuildContext context, {
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithYahoo(
@@ -252,10 +252,10 @@ class AuthController {
   ///
   ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
   ///It provides a User which you can use to perform other actions.
-  static Future<User> signInWithFacebook(
+  static Future<User?> signInWithFacebook(
     BuildContext context, {
-    Function(String) onError,
-    Function(User) onSignInSuccessful,
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
   }) async {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
     return await provider.signInWithFacebook(
@@ -269,7 +269,7 @@ class AuthController {
   /// [context] is necessary
   ///
   /// [onLogout] is a callback function that is called immediately after a logout
-  static logout(BuildContext context, {Function onLogout}) {
+  static logout(BuildContext context, {Function? onLogout}) {
     Provider.of<FireAuthProvider>(context, listen: false).logout(
       onLogout: onLogout,
     );
@@ -296,12 +296,12 @@ class AuthController {
   ///   },
   /// );
   /// ```
-  static User getCurrentUser(
+  static User? getCurrentUser(
     BuildContext context, {
-    Function(User) customMapping,
+    Function(User?)? customMapping,
   }) {
     final provider = Provider.of<FireAuthProvider>(context, listen: false);
-    User cUser = provider.authInstance.currentUser;
+    User? cUser = provider.authInstance.currentUser;
     if (customMapping != null) return customMapping(cUser);
     return cUser;
   }

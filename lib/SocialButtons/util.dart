@@ -20,11 +20,11 @@ class SocialLogos {
 }
 
 class SocialButtonConfiguration {
-  final Color foregroundColor;
-  final Color backgroundColor;
-  final bool signInWithRedirect;
-  final Function(String) onError;
-  final Function(User) onSignInSuccessful;
+  final Color? foregroundColor;
+  final Color? backgroundColor;
+  final bool? signInWithRedirect;
+  final Function(String)? onError;
+  final Function(User?)? onSignInSuccessful;
 
   /// An Object thats used to provide Configuration settings to a SocialButton
   ///

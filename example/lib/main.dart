@@ -11,7 +11,7 @@ void main() async {
 }
 
 class FireAuthExampleApp extends StatelessWidget {
-  const FireAuthExampleApp({Key key}) : super(key: key);
+  const FireAuthExampleApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class FireAuthExampleApp extends StatelessWidget {
 }
 
 class AppOrigin extends StatelessWidget {
-  const AppOrigin({Key key}) : super(key: key);
+  const AppOrigin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class AppOrigin extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "TwitterSignIn Successful!!! UID: ${user.uid}",
+                          "TwitterSignIn Successful!!! UID: ${user!.uid}",
                         );
                       },
                       onError: (e) {
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "GithubSignIn Successful!!! UID: ${user.uid}",
+                          "GithubSignIn Successful!!! UID: ${user!.uid}",
                         );
                       },
                       onError: (e) {
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "MicrosoftSignIn Successful!!! UID: ${user.uid}",
+                          "MicrosoftSignIn Successful!!! UID: ${user!.uid}",
                         );
                       },
                       onError: (e) {
@@ -146,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "GoogleSignIn Successful!!! UID: ${user.uid}",
+                          "GoogleSignIn Successful!!! UID: ${user!.uid}",
                         );
                       },
                       onError: (e) {
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "FacebookSignIn Successful!!! Name: ${user.displayName}",
+                          "FacebookSignIn Successful!!! Name: ${user!.displayName}",
                         );
                       },
                       onError: (e) {
@@ -182,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "FacebookSignIn Successful!!! Name: ${user.displayName}",
+                          "FacebookSignIn Successful!!! Name: ${user!.displayName}",
                         );
                       },
                       onError: (e) {
@@ -200,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                     config: SocialButtonConfiguration(
                       onSignInSuccessful: (user) {
                         print(
-                          "YahooSignIn Successful!!! Name: ${user.displayName}",
+                          "YahooSignIn Successful!!! Name: ${user!.displayName}",
                         );
                       },
                       onError: (e) {
@@ -262,7 +262,7 @@ class _LoginPageState extends State<LoginPage> {
                 config: SocialButtonConfiguration(
                   onSignInSuccessful: (user) {
                     print(
-                      "Anonymous SignIn Successful!!! UID: ${user.uid}",
+                      "Anonymous SignIn Successful!!! UID: ${user!.uid}",
                     );
                   },
                 ),
@@ -323,7 +323,7 @@ class _LoginPageState extends State<LoginPage> {
                           //Callback for a Successful SignIn
                           onSignInSuccessful: (user) {
                             print(
-                              "PhoneSignIn Successful!!! Phone: ${user.phoneNumber}",
+                              "PhoneSignIn Successful!!! Phone: ${user!.phoneNumber}",
                             );
                           },
                         );
@@ -392,7 +392,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           onRegisterSuccessful: (user) {
                             print(
-                                "Successfully Registered Email: ${user.email}");
+                                "Successfully Registered Email: ${user!.email}");
                           },
                         );
                       },
@@ -459,7 +459,7 @@ class _LoginPageState extends State<LoginPage> {
                           //Callback for a Successful SignIn
                           onSignInSuccessful: (user) {
                             print(
-                              "Email SignIn Successful!!! Email: ${user.email}",
+                              "Email SignIn Successful!!! Email: ${user!.email}",
                             );
                           },
                         );
@@ -490,7 +490,7 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

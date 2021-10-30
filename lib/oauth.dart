@@ -12,11 +12,11 @@ import 'fireauth.dart';
 class OAuthEngine {
   ///This function is responsible to conduct the OAuthLoginFlow and handle all the
   ///errors associated with it.
-  static Future<User> performOAuthLogin({
-    String provider,
-    List<String> scopes,
-    Map<String, String> parameters,
-    Function(String) onError,
+  static Future<User?> performOAuthLogin({
+    required String provider,
+    List<String>? scopes,
+    Map<String, String>? parameters,
+    Function(String)? onError,
   }) async {
     //Reduces Boilerplate! Basically Handles all the errors that occur in the OAuthFlow
     void handleError(String err) {
@@ -43,7 +43,7 @@ class OAuthEngine {
       }
     }
 
-    User usr;
+    User? usr;
     try {
       usr = await FirebaseAuthOAuth().openSignInFlow(
         provider,
@@ -59,8 +59,8 @@ class OAuthEngine {
   }
 
   ///This Function is Responsible for initiating the Twitter OAuthEngine.
-  static Future<User> twitterOAuthSignIn({
-    Function(String) onError,
+  static Future<User?> twitterOAuthSignIn({
+    Function(String)? onError,
   }) async {
     return await performOAuthLogin(
       provider: "twitter.com",
@@ -69,8 +69,8 @@ class OAuthEngine {
   }
 
   ///This Function is Responsible for initiating the Github OAuthEngine
-  static Future<User> githubOAuthSignIn({
-    Function(String) onError,
+  static Future<User?> githubOAuthSignIn({
+    Function(String)? onError,
   }) async {
     return await performOAuthLogin(
       provider: "github.com",
@@ -79,8 +79,8 @@ class OAuthEngine {
   }
 
   ///This Function is Responsible for initiating the Github OAuthEngine
-  static Future<User> microsoftOAuthLogin({
-    Function(String) onError,
+  static Future<User?> microsoftOAuthLogin({
+    Function(String)? onError,
   }) async {
     return await performOAuthLogin(
       provider: "microsoft.com",
@@ -89,8 +89,8 @@ class OAuthEngine {
   }
 
   ///This Function is Responsible for initiating the Github OAuthEngine
-  static Future<User> yahooOAuthLogin({
-    Function(String) onError,
+  static Future<User?> yahooOAuthLogin({
+    Function(String)? onError,
   }) async {
     return await performOAuthLogin(
       provider: "yahoo.com",

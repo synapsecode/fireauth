@@ -11,7 +11,7 @@ Works for both Flutter Native and Flutter Web!
 Add this line to your **pubspec.yaml**:
 ```yaml
 dependencies:
-  fireauth: ^0.6.0
+  fireauth: ^0.7.0
 ```
 
 Then run this command:

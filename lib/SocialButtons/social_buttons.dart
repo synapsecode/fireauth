@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class GenericSocialButton extends StatelessWidget {
   final String name;
-  final String logoURL;
-  final String customString;
+  final String? logoURL;
+  final String? customString;
   final Function(BuildContext) initiator;
   final Color foregroundColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final bool useBorder;
   final Color borderColor;
 
@@ -33,11 +33,11 @@ class GenericSocialButton extends StatelessWidget {
   ///
   ///[backgroundColor] - The Background Color
   const GenericSocialButton({
-    Key key,
+    Key? key,
     this.foregroundColor = Colors.white,
     this.backgroundColor = Colors.black,
-    @required this.name,
-    @required this.initiator,
+    required this.name,
+    required this.initiator,
     this.logoURL,
     this.customString,
     this.useBorder = false,
@@ -66,7 +66,7 @@ class GenericSocialButton extends StatelessWidget {
                 SizedBox(
                   height: 28,
                   width: 28,
-                  child: Image.network(logoURL),
+                  child: Image.network(logoURL!),
                 ),
                 SizedBox(width: 12),
               ],
@@ -86,14 +86,14 @@ class GenericSocialButton extends StatelessWidget {
 }
 
 class GoogleSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   ///A Ready-To-Use GoogleSignIn Button
   ///
   ///[config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
 
   const GoogleSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -115,13 +115,13 @@ class GoogleSocialButton extends StatelessWidget {
 }
 
 class AnonymousSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Anonymous SignIn Button
   ///
   ///[config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const AnonymousSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -144,13 +144,13 @@ class AnonymousSocialButton extends StatelessWidget {
 }
 
 class TwitterSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Twitter SignIn Button
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const TwitterSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -171,13 +171,13 @@ class TwitterSocialButton extends StatelessWidget {
 }
 
 class GithubSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Github SignIn Button
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const GithubSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -198,13 +198,13 @@ class GithubSocialButton extends StatelessWidget {
 }
 
 class MicrosoftSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Microsoft SignIn Button
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const MicrosoftSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -226,13 +226,13 @@ class MicrosoftSocialButton extends StatelessWidget {
 }
 
 class FacebookSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Facebook SignIn Button using the Old Facebook Design Language
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const FacebookSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -253,13 +253,13 @@ class FacebookSocialButton extends StatelessWidget {
 }
 
 class NewFacebookSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Facebook SignIn Button aligned with the new Facebook Design Language
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const NewFacebookSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
@@ -282,13 +282,13 @@ class NewFacebookSocialButton extends StatelessWidget {
 }
 
 class YahooSocialButton extends StatelessWidget {
-  final SocialButtonConfiguration config;
+  final SocialButtonConfiguration? config;
 
   /// A Ready-To-Use Facebook SignIn Button aligned with the new Facebook Design Language
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const YahooSocialButton({
-    Key key,
+    Key? key,
     this.config,
   }) : super(key: key);
 
