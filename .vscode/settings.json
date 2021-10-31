@@ -1,7 +1,3 @@
 {
-    "dart.flutterSdkPath": "/Volumes/ExternalSSD/Other/FlutterNS",
-    "dart.flutterSdkPaths": [
-        "/Volumes/ExternalSSD/Other/FlutterNS",
-        "/Users/manashejmadi/Dev/flutter"
-    ]
+    "dart.flutterSdkPath": "/Volumes/ExternalSSD/Other/FlutterNS"
 }

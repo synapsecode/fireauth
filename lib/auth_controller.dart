@@ -244,6 +244,26 @@ class AuthController {
     );
   }
 
+  ///Initiates a Apple OAuth SignUp Flow based on the OAuthEngine Implementation
+  ///
+  ///[context] is necessary
+  ///
+  ///[onError] is a callback that is invoked when an error is encountered
+  ///
+  ///[onSignInSuccessful] is a callback that is invoked when the signIn is successful.
+  ///It provides a User which you can use to perform other actions.
+  static Future<User?> signInWithApple(
+    BuildContext context, {
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
+  }) async {
+    final provider = Provider.of<FireAuthProvider>(context, listen: false);
+    return await provider.signInWithApple(
+      onError: onError,
+      onSignInSuccessful: onSignInSuccessful,
+    );
+  }
+
   ///Initiates a Facebook Native/Web SignUp Flow
   ///
   ///[context] is necessary

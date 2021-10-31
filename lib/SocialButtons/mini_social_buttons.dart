@@ -47,6 +47,8 @@ class _GenericMiniSocialButtonState extends State<GenericMiniSocialButton> {
 
 class MiniGoogleSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Google MiniSocialButton provided by fireauth
   const MiniGoogleSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -66,6 +68,8 @@ class MiniGoogleSocialButton extends StatelessWidget {
 
 class MiniTwitterSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Twitter MiniSocialButton provided by fireauth
   const MiniTwitterSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -84,6 +88,8 @@ class MiniTwitterSocialButton extends StatelessWidget {
 
 class MiniGithubSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Github MiniSocialButton provided by fireauth
   const MiniGithubSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -102,6 +108,8 @@ class MiniGithubSocialButton extends StatelessWidget {
 
 class MiniAnonymousSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Anonymous MiniSocialButton provided by fireauth
   const MiniAnonymousSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -120,6 +128,8 @@ class MiniAnonymousSocialButton extends StatelessWidget {
 
 class MiniMicrosoftSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Microsoft MiniSocialButton provided by fireauth
   const MiniMicrosoftSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -138,6 +148,9 @@ class MiniMicrosoftSocialButton extends StatelessWidget {
 
 class MiniFacebookSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Facebook MiniSocialButton provided by fireauth with the old
+  /// style applied
   const MiniFacebookSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -156,6 +169,9 @@ class MiniFacebookSocialButton extends StatelessWidget {
 
 class MiniNewFacebookSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Facebook MiniSocialButton provided by fireauth with the new
+  /// style applied
   const MiniNewFacebookSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -174,6 +190,8 @@ class MiniNewFacebookSocialButton extends StatelessWidget {
 
 class MiniYahooSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
+
+  /// A ready to use Yahoo MiniSocialButton provided by fireauth
   const MiniYahooSocialButton({Key? key, this.config}) : super(key: key);
 
   @override
@@ -186,6 +204,26 @@ class MiniYahooSocialButton extends StatelessWidget {
       ),
       backgroundColor: (config?.backgroundColor) ?? Color(0xFF400090),
       logoURL: SocialLogos.yahooLogo,
+    );
+  }
+}
+
+class MiniAppleSocialButton extends StatelessWidget {
+  final SocialButtonConfiguration? config;
+
+  /// A ready to use Apple MiniSocialButton provided by fireauth
+  const MiniAppleSocialButton({Key? key, this.config}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericMiniSocialButton(
+      initiator: (context) => AuthController.signInWithApple(
+        context,
+        onSignInSuccessful: (config?.onSignInSuccessful) ?? (User u) {},
+        onError: (config?.onError) ?? (String e) {},
+      ),
+      backgroundColor: (config?.backgroundColor) ?? Color(0xFF000000),
+      logoURL: SocialLogos.appleLogo,
     );
   }
 }

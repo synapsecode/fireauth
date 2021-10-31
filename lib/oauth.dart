@@ -100,5 +100,13 @@ class OAuthEngine {
     );
   }
 
-  //AppleOAuth
+  ///This Function is Responsible for initiating the Apple OAuthEngine
+  static Future<User?> appleOAuthLogin({
+    Function(String)? onError,
+  }) async {
+    return await performOAuthLogin(
+      provider: "apple.com",
+      onError: onError,
+    );
+  }
 }

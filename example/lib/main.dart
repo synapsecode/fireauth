@@ -214,6 +214,24 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                   ),
+                  AppleSocialButton(
+                    config: SocialButtonConfiguration(
+                      onSignInSuccessful: (user) {
+                        print(
+                          "AppleSignIn Successful!!! Name: ${user!.displayName}",
+                        );
+                      },
+                      onError: (e) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("AppleOAuth Error Occured"),
+                            content: Text(e),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ].spaceBetweenColumnElements(8),
               ),
               SizedBox(height: 20),
@@ -241,6 +259,7 @@ class _LoginPageState extends State<LoginPage> {
                         MiniNewFacebookSocialButton(),
                         MiniAnonymousSocialButton(),
                         MiniYahooSocialButton(),
+                        MiniAppleSocialButton(),
                       ].spaceBetweenRowElements(10),
                     ),
                   ],

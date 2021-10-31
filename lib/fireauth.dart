@@ -514,6 +514,23 @@ class FireAuthProvider extends ChangeNotifier {
     }
     return user;
   }
+
+  //Apple
+  Future<User?> signInWithApple({
+    Function(String)? onError,
+    Function(User)? onSignInSuccessful,
+  }) async {
+    User? user = await OAuthEngine.appleOAuthLogin(
+      onError: onError,
+    );
+    if (user != null) {
+      if (onSignInSuccessful != null) onSignInSuccessful(user);
+      //======================HOT RESTART BUG BYPASS============================
+      await HotRestartBypassMechanism.saveLoginState(true);
+      //======================HOT RESTART BUG BYPASS============================
+    }
+    return user;
+  }
   //-----------------------------------OAUTH------------------------------------
 
   logout({Function? onLogout}) async {

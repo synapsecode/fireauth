@@ -284,7 +284,7 @@ class NewFacebookSocialButton extends StatelessWidget {
 class YahooSocialButton extends StatelessWidget {
   final SocialButtonConfiguration? config;
 
-  /// A Ready-To-Use Facebook SignIn Button aligned with the new Facebook Design Language
+  /// A Ready-To-Use Yahoo Sign in Button provided by fireauth
   ///
   /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
   const YahooSocialButton({
@@ -303,6 +303,35 @@ class YahooSocialButton extends StatelessWidget {
       ),
       logoURL: SocialLogos.yahooLogo,
       backgroundColor: (config?.backgroundColor) ?? Color(0xFF400090),
+      foregroundColor: (config?.foregroundColor) ?? Colors.white,
+      useBorder: true,
+      borderColor: Colors.white10,
+    );
+  }
+}
+
+class AppleSocialButton extends StatelessWidget {
+  final SocialButtonConfiguration? config;
+
+  /// A Ready-To-Use Apple Sign in Button provided by fireauth
+  ///
+  /// [config] This parameter accepts a SocialButtonConfiguration object and is used to change properties of the button
+  const AppleSocialButton({
+    Key? key,
+    this.config,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericSocialButton(
+      name: 'Apple',
+      initiator: (context) => AuthController.signInWithApple(
+        context,
+        onSignInSuccessful: (config?.onSignInSuccessful) ?? (u) {},
+        onError: (config?.onError) ?? (e) {},
+      ),
+      logoURL: SocialLogos.appleLogo,
+      backgroundColor: (config?.backgroundColor) ?? Color(0xFF000000),
       foregroundColor: (config?.foregroundColor) ?? Colors.white,
       useBorder: true,
       borderColor: Colors.white10,

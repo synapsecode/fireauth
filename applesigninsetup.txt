@@ -1,0 +1,5 @@
+> Enable Apple SignIn on Firebase Console
+> Copy RedirectURL for later Use
+> Get your bundle id from XCode
+> Make sure your Apple Developer Team is selected
+> In XCode, click on +Capability and double click SignInWithApple

@@ -17,6 +17,8 @@ class SocialLogos {
       "https://img.icons8.com/color/48/000000/lock.png";
   static String yahooLogo =
       "https://img.icons8.com/windows/32/FFFFFF/yahoo.png";
+  static String appleLogo =
+      "https://img.icons8.com/ios-glyphs/48/FFFFFF/mac-os.png";
 }
 
 class SocialButtonConfiguration {

@@ -1,6 +1,9 @@
-## 0.7.0 (31.10)
+## 0.8.0 (01.11)
+- **FEAT**: Implemented Apple Sign In (Untested)
+
+## 0.7.0 (31.10) (Breaking Change)
 - **FEAT**: Completely Migrated FireAuth to Null Safety
-- **FEAT**: Updated all Dependencies to the latest ones at this point of time
+- **DEPENDENCY**: Updated all Dependencies to the latest ones at this point of time
 - **FEAT**: Kotlin Version of example app changed to 1.4.32
 
 ## 0.6.0
