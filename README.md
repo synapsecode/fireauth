@@ -190,6 +190,13 @@ AuthController.signInWithYahoo(
   onSignInSuccessful: (User u) {},
   onError: (String e) {},
 );
+
+//Apple OAuth SignIn (Native on iOS)
+AuthController.signInWithApple(
+  context,
+  onSignInSuccessful: (User u) {},
+  onError: (String e) {},
+);
 ```
 
 ### Logout
@@ -214,7 +221,7 @@ AuthController.getCurrentUser(
 If you just want a ready to use button that enables a particular Social SignIn, This is these are the Widgets that you're looking for!
 
 <span>
-<img src="https://i.ibb.co/Q6ybLVh/fffff.jpg" align="right">  
+<img src="https://i.ibb.co/KWCGdpF/New-Project.jpg" align="right">  
   
 ```dart
 import 'package:fireauth/fireauth.dart';
@@ -229,6 +236,7 @@ FacebookSocialButton(),
 NewFacebookSocialButton(),
 YahooSocialButton(),
 AnonymousSocialButton(),
+AppleSocialButton(),
 
 //MiniSocialButtons
 MiniTwitterSocialButton(),
@@ -240,6 +248,7 @@ MiniFacebookSocialButton(),
 MiniNewFacebookSocialButton(),
 MiniAnonymousSocialButton(),
 MiniYahooSocialButton(),
+AppleSocialButton(),
 
 /* Each of these buttons accept a SocialButtonConfiguration! Ex:
 GoogleSocialButton(

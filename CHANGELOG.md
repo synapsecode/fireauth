@@ -1,5 +1,8 @@
-## 0.8.0 (01.11)
-- **FEAT**: Implemented Apple Sign In (Untested)
+## 0.9.0 (01.11)
+- **FEAT**: Deployed Apple SignIn Feature + Updated Readme
+
+## 0.8.0 (31.10)
+- **FEAT**: Implemented Apple Sign In (Implicit)
 
 ## 0.7.0 (31.10) (Breaking Change)
 - **FEAT**: Completely Migrated FireAuth to Null Safety
