@@ -31,9 +31,9 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 > 🔴  If you do not use FireSetup there could be some issues due to incorrect manual setup.
 
 ## Platform Support
-- Android
-- Web
-- iOS
+- Android (Full Support)
+- Web (Full Support)
+- iOS (Full Support)
 - macOS *( Dependencies Unsupported )*
 - Windows *( Dependencies Unsupported )*
 - Linux *( Dependencies Unsupported )*
@@ -49,8 +49,8 @@ Setting up Firebase correctly to work with all the Authentication Methods provid
 - Microsoft
 - Facebook
 - Yahoo
+- Apple (Untested)
 - Passwordless (Implementation Pending)
-- Apple (Implementation Pending)
 
 
 >⚠️ Most of these Authentication Methods need extra setup! Everything is documented very well in the [FireSetup README](https://github.com/synapsecode/FireSetup/blob/main/README.md#additional-setup-instructions)
